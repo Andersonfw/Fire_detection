@@ -11,8 +11,8 @@ from matplotlib.pyplot import jet
 from skimage.color import label2rgb
 
 # Tipo do algoritmo a ser implementado
-ALG = 'SEEDS'
-# ALG = 'SLIC'
+# ALG = 'SEEDS'
+ALG = 'SLIC'
 # ALG = 'SLICO'
 # ALG = 'MSLIC'
 # ALG = 'LSC'
