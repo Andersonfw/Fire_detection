@@ -7,7 +7,7 @@ import cv2 as cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-img = cv2.imread('Dataset/Testing/fire/abc168.jpg', 0)
+img = cv2.imread('Dataset/Testing/fire/abc162.jpg', 0)
 
 height, width = img.shape
 
@@ -74,12 +74,44 @@ for m in range(submatriz_num):
 Reconstrução da imagem a partir das submatrizes
 '''
 
-# Largura e espessura da borda
-border_h = 2
-border_w = 2
+# # Largura e espessura da borda
+# border_h = 2
+# border_w = 2
+#
+# # Cria nova matriz considerando o tamanho da imagem original adicionada da espessura da borda e nº de submatrizes.
+# new_image = np.empty((int(height + (height/submatrix_height) * 2 * border_w), int(width + int(width/submatrix_width) * 2 * border_h)),dtype=np.uint8)
+#
+# # variáveis para demarcação de posição da matrix
+# iniciox = 0
+# inicioy = 0
+# for i in range(submatriz_num):
+#     # Adiciona a borda na submatriz
+#     previmg = sumatrix_list[i]
+#     previmg = cv2.copyMakeBorder(src=previmg, top=border_h, bottom=border_h, left=border_w, right=border_w,
+#                                borderType=cv2.BORDER_CONSTANT,value=(255))
+#     # Adiciona a submatriz a nova imagem com a borda
+#     new_image[iniciox:iniciox + submatrix_height + 2 * border_w , inicioy:inicioy + submatrix_width + 2 * border_h] = previmg
+#     # Desloca o inicio da altura da matriz considerando o tamanho de cada submatriz + borda
+#     iniciox += submatrix_height + 2 * border_w
+#     # Se o inicio da altura chegar ao final da matriz zera ele e desloca o inicio na largura
+#     if(iniciox == (height + (height/submatrix_height) * 2 * border_w)):
+#         iniciox = 0
+#         # Desloca o inicio da largura da matriz considerando o tamanho de cada submatriz + borda
+#         inicioy += submatrix_width + 2 * border_h
+#     if (inicioy == (width + (width/submatrix_width) * 2 * border_h)):
+#         inicioy = 0
+
+# Line thickness of 2 px
+thickness = 1
+
+# Blue color in BGR
+color = (255, 0, 0)
+
+# represents the top left corner of rectangle
+start_point = (0,0)
 
 # Cria nova matriz considerando o tamanho da imagem original adicionada da espessura da borda e nº de submatrizes.
-new_image = np.empty((int(height + (height/submatrix_height) * 2 * border_w), int(width + int(width/submatrix_width) * 2 * border_h)),dtype=np.uint8)
+new_image = np.empty((height, width),dtype=np.uint8)
 
 # variáveis para demarcação de posição da matrix
 iniciox = 0
@@ -87,18 +119,18 @@ inicioy = 0
 for i in range(submatriz_num):
     # Adiciona a borda na submatriz
     previmg = sumatrix_list[i]
-    previmg = cv2.copyMakeBorder(src=previmg, top=border_h, bottom=border_h, left=border_w, right=border_w,
-                               borderType=cv2.BORDER_CONSTANT,value=(255))
+    end_point = (previmg.shape[0], previmg.shape[1])
+    previmg = cv2.rectangle(previmg, start_point,end_point, color, thickness)
     # Adiciona a submatriz a nova imagem com a borda
-    new_image[iniciox:iniciox + submatrix_height + 2 * border_w , inicioy:inicioy + submatrix_width + 2 * border_h] = previmg
+    new_image[iniciox:iniciox + submatrix_height, inicioy:inicioy + submatrix_width] = previmg
     # Desloca o inicio da altura da matriz considerando o tamanho de cada submatriz + borda
-    iniciox += submatrix_height + 2 * border_w
+    iniciox += submatrix_height
     # Se o inicio da altura chegar ao final da matriz zera ele e desloca o inicio na largura
-    if(iniciox == (height + (height/submatrix_height) * 2 * border_w)):
+    if iniciox == height:
         iniciox = 0
         # Desloca o inicio da largura da matriz considerando o tamanho de cada submatriz + borda
-        inicioy += submatrix_width + 2 * border_h
-    if (inicioy == (width + (width/submatrix_width) * 2 * border_h)):
+        inicioy += submatrix_width
+    if inicioy == width :
         inicioy = 0
 
 # print(sumatrix_list[0])

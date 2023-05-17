@@ -11,8 +11,8 @@ import math
 def map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * ((out_max - out_min) / (in_max - in_min)) + out_min
 
-# img = cv2.imread('imagens/resize_image.jpg', 0)
-img = cv2.imread('Dataset/Testing/fire/abc162.jpg', 0)
+img = cv2.imread('imagens/resize_image.jpg', 0)
+# img = cv2.imread('Dataset/Testing/fire/abc162.jpg', 0)
 print(img.shape)
 print(img)
 mu = img.shape[0]
@@ -41,22 +41,24 @@ for x in range(x_size):
 
 z = img + j*v
 
+ang = np.zeros((mu,tau), dtype=np.uint8)
 for i in range(mu):
     for j in range(tau):
-        angle[i,j] = math.atan2(v[i,j],img[i,j])
+        ang[i,j] = math.atan2(v[i,j],img[i,j])
 
-angle=map(angle, np.min(angle), np.max(angle), 0, 255)
+ang=map(ang, np.min(ang), np.max(ang), 0, 255)
+
 print(angle)
 
 plt.subplot(221), plt.imshow(img, cmap='gray'), plt.title('image')
 plt.subplot(222), plt.imshow(v, cmap='gray'), plt.title('V')
-plt.subplot(223), plt.imshow(angle, cmap='gray'), plt.title('angle')
+plt.subplot(223), plt.imshow(ang, cmap='gray'), plt.title('angle')
 
 plt.show()
 
 cv2.imshow("image original", img)
 cv2.imshow("image sum", v)
-cv2.imshow("angle", angle)
+cv2.imshow("angle", ang)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
