@@ -46,7 +46,6 @@ angle=map(angle, np.min(angle), np.max(angle), 0, 255)
 print(angle)
 
 
-
 cv2.imshow("image original", img)
 cv2.imshow("image sum", v)
 cv2.imshow("angle", angle)

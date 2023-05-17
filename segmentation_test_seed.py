@@ -22,7 +22,7 @@ src = cv2.imread('imagens/fire_churas.jpg', cv2.IMREAD_COLOR)
 assert src is not None, 'Could not open image'
 
 # Resize the image to speed up processing (optional)
-src = cv2.resize(src, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+src = cv2.resize(src, None, fx=0.8, fy=0.8, interpolation=cv2.INTER_AREA)
 
 # Apply Gaussian blur to smooth the image (optional)
 src = cv2.GaussianBlur(src, (3, 3), 1)
