@@ -12,7 +12,8 @@ def map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 img = cv2.imread('imagens/resize_image.jpg', 0)
-
+print(img.shape)
+print(img)
 mu = img.shape[0]
 tau = img.shape[1]
 
