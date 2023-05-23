@@ -75,8 +75,8 @@ A matriz da imagem original será divida em 4 matrizes menores de tamanho 125x12
 Se fosse submatriz_height = 100 e  submatriz_width = 100, não seria possível devido 
 a divisão ser fracionária, resultando em uma matriz incompleta. 
 '''
-submatriz_height = 25
-submatriz_width = 25
+submatriz_height = 5
+submatriz_width = 5
 submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrizes
 
 '''
@@ -84,7 +84,8 @@ submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrize
 '''
 if __name__ == "__main__":
     # img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
-    img = cv2.imread('Dataset/Testing/fire/abc152.jpg')
+    img = cv2.imread('Dataset/Testing/fire/abc180.jpg')
+    # img = cv2.imread('Dataset/Testing/nofire/abc210.jpg')
     height, width, dim = img.shape
     # height, width = img.shape
     mBlue, mGreen, mRed = cv2.split(img)    # divide a imagem nas matrizes BGR
