@@ -3,30 +3,65 @@ Created on maio 16 19:56:46 2023
 
 @author: Ânderson Felipe Weschenfelder
 """
+import csv
+import locale
+import os
+
 import cv2 as cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
 class submatrix:
-    def __init__(self, index, array ):
-        self.matriz = mount_matrix(array)
+    def __init__(self, index, Barray, Garray, Rarray ):
+        self.Bmatrix = mount_matrix(Barray)
+        self.Gmatrix = mount_matrix(Garray)
+        self.Rmatrix = mount_matrix(Rarray)
+        self.matrix = cv2.merge((self.Bmatrix, self.Gmatrix, self.Rmatrix))
         self.index = index
-        self.mean = np.mean( self.matriz)
-        self.desv = np.std(self.matriz, axis=None)
+        self.mean = np.mean( self.matrix)
+        self.desv = np.std(self.matrix, axis=None)
 
 def mount_matrix(array):
     global submatriz_length
 
-    matriz = np.empty((submatriz_length), dtype=np.uint8)
-    matriz = array
+    matrix = np.empty((submatriz_length), dtype=np.uint8)
+    matrix = array
 
-    return matriz
+    return matrix
 
-img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
-# img = cv2.imread('Dataset/Testing/fire/abc146.jpg')
+def saveCSVfile(filename,data):
+    with open(os.path.join(os.path.expanduser('~'), 'Documents', filename), 'a+',
+              newline='') as f:  # Abre ou cria arquivo csv na pasta documentos do user
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
+        writer.writerow(data)
 
-# height, width, dim = img.shape
-height, width = img.shape
+'''
+        CSV FILE
+'''
+filename = "tabela_medias.csv"  # Nome do arquivo CSV
+header = ['index', 'mean global', 'desvio', 'mean blue', 'desv blue', 'mean green', 'desv green', 'mean red',
+          'desv red']   # Cabeçalho do arquivo CSV
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configurar a localização para usar a vírgula como separador decimal
+
+
+'''
+        VARIÁVEIS DE SIMULAÇÃO
+'''
+blue = 0    # index da matriz blue da imagem
+green = 1    # index da matriz green da imagem
+red = 2    # index da matriz red da imagem
+listClassSubmatrix = [] # array de classes da submatrizes
+
+''' CONFIGURAÇÕES PARA INSERIR TEXTO NA IMAGEM'''
+posicao = (0, 20)  # Posição (x, y) do texto na imagem
+fonte = cv2.FONT_HERSHEY_PLAIN
+tamanho_fonte = 1
+cor = (255, 255, 255)  # Cor do texto (no formato BGR)
+
+''' CONFIGURAÇÕES PARA INSERIR RETÂNGULO NA IMAGEM'''
+thickness = 1   # Line thickness of 2 px
+color = (255, 0, 0) # Blue color in BGR
+start_point = (0, 0)    # represents the top left corner of rectangle
 
 # Dimensão das submatrizes
 '''
@@ -42,149 +77,125 @@ a divisão ser fracionária, resultando em uma matriz incompleta.
 '''
 submatriz_height = 25
 submatriz_width = 25
-
-# Tamanho das submatrizes
-submatriz_length = (submatriz_height, submatriz_width)
-
-# Número de submatrizes
-'''
-calculo rápido:
-submatriz_num = (height/submatrix_height)**2
-submatriz_num = (250/25)**2 = 10x10=100
-'''
-submatriz_num = (height / submatriz_height) * (width / submatriz_width)
-
-if submatriz_num.is_integer():
-    submatriz_num = int(submatriz_num)
-else:
-    print("Número de submatrizes inválido.")
-    exit(-1)
-# Criar array de matrizes vazio (num, submatrix_height, submatrix_width)
-sumatrix_list = np.empty((submatriz_num,) + submatriz_length, dtype=np.uint8)
-# sumatrix_list = np.empty((100,3,25,25), dtype=np.uint8)
-# variáveis para demarcação de posição da matrix
-desl_x = 0
-desl_y = 0
-
-lisClass = []
-
-# Loop de divisão da matriz
-'''
-Percorre pixel a pixel da matriz, copiando seu valor 
-'''
-# # Cada m repetição é uma nova submatrix
-# for m in range(submatriz_num):
-#     # percorre os valores de altura da matriz
-#     for i in range(submatriz_height):
-#         # percorre os valores de largura da matriz
-#         for j in range(submatriz_width):
-#             # Copia para a "m" submatriz o valor do pixel na posição i,j considerando o deslocamento
-#             sumatriz_list[m,i,j]=img[desl_x + i, desl_y + j]
-#     # desloca a posição da altura da matrix
-#     desl_x += submatriz_height
-#     if(desl_x == height):
-#         desl_x = 0
-#         # desloca a posição de largura da matrix
-#         desl_y += submatriz_width
-#     if (desl_y == width):
-#         desl_y = 0
-
-# Cada m repetição é uma nova submatrix
-# for m in range(submatriz_num):
-m = 0
-    # percorre os valores de altura da matriz
-for i in range(0, width,submatriz_width):
-    # percorre os valores de largura da matriz
-    for j in range(0,height,submatriz_height):
-        # Copia para a "m" submatriz o valor do pixel na posição i,j considerando o deslocamento
-        sumatrix_list[m]= img[i:submatriz_width + i, j:submatriz_height + j]
-        obj = submatrix(m, img[i:submatriz_width + i, j:submatriz_height + j].copy())
-        lisClass.append(obj)
-        m +=1
-
+submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrizes
 
 '''
-Reconstrução da imagem a partir das submatrizes
+        Main
 '''
+if __name__ == "__main__":
+    # img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
+    img = cv2.imread('Dataset/Testing/fire/abc152.jpg')
+    height, width, dim = img.shape
+    # height, width = img.shape
+    mBlue, mGreen, mRed = cv2.split(img)    # divide a imagem nas matrizes BGR
 
-# # Largura e espessura da borda
-# border_h = 2
-# border_w = 2
-#
-# # Cria nova matriz considerando o tamanho da imagem original adicionada da espessura da borda e nº de submatrizes.
-# new_image = np.empty((int(height + (height/submatrix_height) * 2 * border_w), int(width + int(width/submatrix_width) * 2 * border_h)),dtype=np.uint8)
-#
-# # variáveis para demarcação de posição da matrix
-# iniciox = 0
-# inicioy = 0
-# for i in range(submatriz_num):
-#     # Adiciona a borda na submatriz
-#     previmg = sumatrix_list[i]
-#     previmg = cv2.copyMakeBorder(src=previmg, top=border_h, bottom=border_h, left=border_w, right=border_w,
-#                                borderType=cv2.BORDER_CONSTANT,value=(255))
-#     # Adiciona a submatriz a nova imagem com a borda
-#     new_image[iniciox:iniciox + submatrix_height + 2 * border_w , inicioy:inicioy + submatrix_width + 2 * border_h] = previmg
-#     # Desloca o inicio da altura da matriz considerando o tamanho de cada submatriz + borda
-#     iniciox += submatrix_height + 2 * border_w
-#     # Se o inicio da altura chegar ao final da matriz zera ele e desloca o inicio na largura
-#     if(iniciox == (height + (height/submatrix_height) * 2 * border_w)):
-#         iniciox = 0
-#         # Desloca o inicio da largura da matriz considerando o tamanho de cada submatriz + borda
-#         inicioy += submatrix_width + 2 * border_h
-#     if (inicioy == (width + (width/submatrix_width) * 2 * border_h)):
-#         inicioy = 0
+    # Número de submatrizes
+    '''
+    calculo rápido:
+    submatriz_num = (height/submatrix_height)**2
+    submatriz_num = (250/25)**2 = 10x10=100
+    '''
+    submatriz_num = (height / submatriz_height) * (width / submatriz_width)
 
-# Line thickness of 2 px
-thickness = 1
+    if submatriz_num.is_integer():
+        submatriz_num = int(submatriz_num)
+    else:
+        print("Número de submatrizes inválido.")
+        exit(-1)
 
-# Blue color in BGR
-color = (255, 0, 0)
+    # Criar array de matrizes vazio (num, submatrix_height, submatrix_width)
+    sumatrix_list = np.empty((submatriz_num,dim) + submatriz_length, dtype=np.uint8)
 
-# represents the top left corner of rectangle
-start_point = (0,0)
+    # variáveis para demarcação de posição da matrix
+    desl_x = 0
+    desl_y = 0
 
-# Cria nova matriz considerando o tamanho da imagem original adicionada da espessura da borda e nº de submatrizes.
-new_image = np.empty((height, width),dtype=np.uint8)
+    # Loop de divisão da matriz
+    '''
+    Percorre pixel a pixel da matriz, copiando seu valor 
+    '''
+    m = 0   # index de identificação da submatriz
+        # percorre os valores de altura da matriz
+    for i in range(0, width,submatriz_width):
+        # percorre os valores de largura da matriz
+        for j in range(0,height,submatriz_height):
+            # Copia para a "m" submatriz o valor do pixel na posição i,j considerando o deslocamento
+            # sumatrix_list[m]= img[i:submatriz_width + i, j:submatriz_height + j]
+            # obj = submatrix(m, img[i:submatriz_width + i, j:submatriz_height + j].copy())
+            sumatrix_list[m, blue]= mBlue[i:submatriz_width + i, j:submatriz_height + j]
+            sumatrix_list[m, green] = mGreen[i:submatriz_width + i, j:submatriz_height + j]
+            sumatrix_list[m, red] = mRed[i:submatriz_width + i, j:submatriz_height + j]
+            obj = submatrix(m, mBlue[i:submatriz_width + i, j:submatriz_height + j],mGreen[i:submatriz_width + i, j:submatriz_height + j],  mRed[i:submatriz_width + i, j:submatriz_height + j])
+            listClassSubmatrix.append(obj)
+            m += 1
+    '''
+    Reconstrução da imagem a partir das submatrizes
+    '''
+    # Cria nova matriz considerando o tamanho da imagem original
+    new_image = np.empty((height, width, dim),dtype=np.uint8)
+    saveCSVfile(filename,header)    # cria o cabeçalho do arquivo CSV
+    # variáveis para demarcação de posição da matrix
+    iniciox = 0
+    inicioy = 0
+    # print("Valores de média e desvio padrão: \r\n")
+    for i in range(submatriz_num):
+        previmg = listClassSubmatrix[i].matrix.copy() # recebe a matriz do index i
+        # print("Submatriz [{}] -> Média = {:.3f}   Desvio padrão = {:.3f}".format(i, listClassSubmatrix[i].mean, listClassSubmatrix[i].desv))
 
-# variáveis para demarcação de posição da matrix
-iniciox = 0
-inicioy = 0
-print("Valores de média e desvio padrão: \r\n")
-for i in range(submatriz_num):
-    # Adiciona a borda na submatriz
-    # previmg = sumatrix_list[i]
-    previmg = lisClass[i].matriz
-    print("Submatriz [{}] -> Média = {}   Desvio padrão = {}".format(i,lisClass[i].mean, lisClass[i].desv ))
-    end_point = (previmg.shape[0], previmg.shape[1])
+        meanall = locale.format_string('%.3f', listClassSubmatrix[i].mean)
+        desvall = locale.format_string('%.3f', listClassSubmatrix[i].desv)
+        meanBlue = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Bmatrix))
+        desvBlue = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Bmatrix, axis=None))
+        meanGreen = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Gmatrix))
+        desvGreen = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Gmatrix, axis=None))
+        meanRed = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Rmatrix))
+        desvRed = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Rmatrix, axis=None))
+        csvdata = [i,meanall, desvall, meanBlue, desvBlue, meanGreen, desvGreen,meanRed, desvRed]
+        saveCSVfile(filename, csvdata)
 
-    # Adicionar o texto na imagem
-    texto = "{}".format(i)
-    posicao = (0, 20)  # Posição (x, y) do texto na imagem
-    fonte = cv2.FONT_HERSHEY_PLAIN
-    tamanho_fonte = 1
-    cor = (255, 255, 255)  # Cor do texto (no formato BGR)
-    cv2.putText(previmg, texto, posicao, fonte, tamanho_fonte, cor, thickness=2)
+        # Adicionar o texto na imagem
+        texto = "{}".format(i)
+        cv2.putText(previmg, texto, posicao, fonte, tamanho_fonte, cor, thickness=2)
+        # Adicionar um retângulo na imagem
+        end_point = (previmg.shape[0], previmg.shape[1])
+        previmg = cv2.rectangle(previmg, start_point,end_point, color, thickness)
 
-    # Adicionar um retângulo na imagem
-    previmg = cv2.rectangle(previmg, start_point,end_point, color, thickness)
+        # Adiciona a submatriz a nova imagem
+        new_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
+        # Desloca o inicio da altura da matriz considerando o tamanho de cada submatriz + borda
+        inicioy += submatriz_width
+        # Se o inicio da altura chegar ao final da matriz zera ele e desloca o inicio na largura
+        if inicioy == height:
+            inicioy = 0
+            # Desloca o inicio da largura da matriz considerando o tamanho de cada submatriz + borda
+            iniciox += submatriz_height
+        if iniciox == width :
+            iniciox = 0
+    '''
+    Reconstrução da imagem considerando alguns parâmetros
+    '''
+    param_image = np.empty((height, width, dim),dtype=np.uint8)
+    iniciox = 0
+    inicioy = 0
+    array_raw = np.zeros((submatriz_height,submatriz_width,dim))    # array nulo para casos que não contem dados relevantes
+    for i in range(submatriz_num):
+        if(listClassSubmatrix[i].desv > 50):
+            previmg = listClassSubmatrix[i].matrix.copy()
+        else:
+            previmg = array_raw
+        param_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
+        inicioy += submatriz_width
+        if inicioy == height:
+            inicioy = 0
+            iniciox += submatriz_height
+        if iniciox == width:
+            iniciox = 0
 
-    # Adiciona a submatriz a nova imagem com a borda
-    new_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
-    # Desloca o inicio da altura da matriz considerando o tamanho de cada submatriz + borda
-    inicioy += submatriz_width
-    # Se o inicio da altura chegar ao final da matriz zera ele e desloca o inicio na largura
-    if inicioy == height:
-        inicioy = 0
-        # Desloca o inicio da largura da matriz considerando o tamanho de cada submatriz + borda
-        iniciox += submatriz_height
-    if iniciox == width :
-        iniciox = 0
 
-# print(sumatrix_list[0])
-# print(img)
-cv2.imshow("Imagem Original",img)
-cv2.imshow("Imagem de sub Imagens",new_image)
-# cv2.imshow("teste",sumatrix_list[1])
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+    cv2.imshow("Imagem Original", img)
+    cv2.imshow("Imagem de sub Imagens", new_image)
+    cv2.imshow("Imagem cortada", param_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
