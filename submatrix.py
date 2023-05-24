@@ -79,8 +79,8 @@ A matriz da imagem original será divida em 4 matrizes menores de tamanho 125x12
 Se fosse submatriz_height = 100 e  submatriz_width = 100, não seria possível devido 
 a divisão ser fracionária, resultando em uma matriz incompleta. 
 '''
-submatriz_height = 25
-submatriz_width = 25
+submatriz_height = 10
+submatriz_width = 10
 submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrizes
 
 '''
@@ -89,8 +89,8 @@ submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrize
 if __name__ == "__main__":
     # img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
     # img = cv2.imread('Dataset/Testing/fire/abc184.jpg')
-    # img = cv2.imread('Dataset/Testing/fire/abc150.jpg')
-    img = cv2.imread('Dataset/Testing/fire/abc008.jpg')
+    # img = cv2.imread('Dataset/Testing/nofire/abc317.jpg')
+    img = cv2.imread('Dataset/Testing/fire/abc050.jpg')
 
     # Apply Gaussian blur to smooth the image (optional)
     # img = cv2.GaussianBlur(src, (5, 5), 1)
@@ -222,7 +222,7 @@ if __name__ == "__main__":
         # if desvall > 40 and ratio_mean_RB > 1.5 and ratio_mean_RG > 1.5:
         #     previmg = listClassSubmatrix[i].matrix.copy()
 
-        if desvall > 40 and ratio_desv_global > 0.8 and ratio_mean_RB < 4 :
+        if desvall > 50 and ratio_desv_global > 0.9 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and meanRed > 120 and ratio_desv_RB < 5:
             previmg = listClassSubmatrix[i].matrix.copy()
         else:
             previmg = array_raw
