@@ -6,7 +6,7 @@ Created on maio 16 19:56:46 2023
 import csv
 import locale
 import os
-
+import glob
 import cv2 as cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -28,7 +28,7 @@ def mount_matrix(array):
     return matrix
 
 def saveCSVfile(filename,data):
-    with open(os.path.join(os.path.expanduser('~'), 'Documents', filename), 'a+',
+    with open(os.path.join(os.getcwd(), filename), 'a+',
               newline='') as f:  # Abre ou cria arquivo csv na pasta documentos do user
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC, delimiter=';')
         writer.writerow(data)
@@ -37,10 +37,16 @@ def saveCSVfile(filename,data):
         CSV FILE
 '''
 filename = "tabela_medias.csv"  # Nome do arquivo CSV
-header = ['index', 'mean global', 'desvio', 'mean blue', 'desv blue', 'mean green', 'desv green', 'mean red',
-          'desv red']   # Cabeçalho do arquivo CSV
+header = ['index', 'mediana','mean global', 'desvio', 'mean blue', 'desv blue', 'mean green', 'desv green', 'mean red',
+          'desv red', "R/G mean", "R/B mean", "R/G desv", "R/B desv"]   # Cabeçalho do arquivo CSV
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configurar a localização para usar a vírgula como separador decimal
 
+'''
+        DIRETÓRIOS
+'''
+fireImageDir = 'Dataset/create/fire/*.jpg"'
+nofireImageDir = 'Dataset/create/nofire/*.jpg"'
+saveImageDir = 'Dataset/create/save/'
 
 '''
         VARIÁVEIS DE SIMULAÇÃO
@@ -84,7 +90,7 @@ if __name__ == "__main__":
     # img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
     # img = cv2.imread('Dataset/Testing/fire/abc184.jpg')
     # img = cv2.imread('Dataset/Testing/fire/abc150.jpg')
-    img = cv2.imread('Dataset/Testing/nofire/abc191.jpg')
+    img = cv2.imread('Dataset/Testing/fire/abc008.jpg')
 
     # Apply Gaussian blur to smooth the image (optional)
     # img = cv2.GaussianBlur(src, (5, 5), 1)
@@ -148,13 +154,26 @@ if __name__ == "__main__":
 
         meanall = locale.format_string('%.3f', listClassSubmatrix[i].mean)
         desvall = locale.format_string('%.3f', listClassSubmatrix[i].desv)
+        median = locale.format_string('%.3f', np.median(listClassSubmatrix[i].matrix))
+        meanBlue =  np.mean(listClassSubmatrix[i].Bmatrix)
+        desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
+        meanGreen =  np.mean(listClassSubmatrix[i].Gmatrix)
+        desvGreen =  np.std(listClassSubmatrix[i].Gmatrix, axis=None)
+        meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
+        desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
+
+        ratio_mean_RG = locale.format_string('%.3f',(meanRed/meanGreen))
+        ratio_mean_RB = locale.format_string('%.3f', (meanRed / meanBlue))
+        ratio_desv_RG = locale.format_string('%.3f', (desvRed / desvGreen))
+        ratio_desv_RB = locale.format_string('%.3f', (meanRed / desvBlue))
+
         meanBlue = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Bmatrix))
         desvBlue = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Bmatrix, axis=None))
         meanGreen = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Gmatrix))
         desvGreen = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Gmatrix, axis=None))
         meanRed = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Rmatrix))
         desvRed = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Rmatrix, axis=None))
-        csvdata = [i,meanall, desvall, meanBlue, desvBlue, meanGreen, desvGreen,meanRed, desvRed]
+        csvdata = [i, median, meanall, desvall, meanBlue, desvBlue, meanGreen, desvGreen,meanRed, desvRed,ratio_mean_RG,ratio_mean_RB,ratio_desv_RG,ratio_desv_RB]
         saveCSVfile(filename, csvdata)
 
         # Adicionar o texto na imagem
@@ -183,9 +202,28 @@ if __name__ == "__main__":
     inicioy = 0
     array_raw = np.zeros((submatriz_height,submatriz_width,dim))    # array nulo para casos que não contem dados relevantes
     for i in range(submatriz_num):
-        if listClassSubmatrix[i].desv > 40 and (np.mean(listClassSubmatrix[i].Rmatrix / np.mean(listClassSubmatrix[i].Bmatrix))) > 1.5 and (np.mean(listClassSubmatrix[i].Rmatrix / np.mean(listClassSubmatrix[i].Gmatrix))) > 1.5:
+        meanall =listClassSubmatrix[i].mean
+        desvall = listClassSubmatrix[i].desv
+        median = np.median(listClassSubmatrix[i].matrix)
+        meanBlue =  np.mean(listClassSubmatrix[i].Bmatrix)
+        desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
+        meanGreen =  np.mean(listClassSubmatrix[i].Gmatrix)
+        desvGreen =  np.std(listClassSubmatrix[i].Gmatrix, axis=None)
+        meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
+        desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
+
+        ratio_mean_RG = meanRed / meanGreen
+        ratio_mean_RB = meanRed / meanBlue
+        ratio_desv_RG = desvRed / desvGreen
+        ratio_desv_RB = meanRed / desvBlue
+
+        ratio_desv_global = desvall/desvRed
+
+        # if desvall > 40 and ratio_mean_RB > 1.5 and ratio_mean_RG > 1.5:
+        #     previmg = listClassSubmatrix[i].matrix.copy()
+
+        if desvall > 40 and ratio_desv_global > 0.8 and ratio_mean_RB < 4 :
             previmg = listClassSubmatrix[i].matrix.copy()
-            print(i)
         else:
             previmg = array_raw
         param_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
