@@ -23,10 +23,8 @@ class submatrix:
 
 def mount_matrix(array):
     global submatriz_length
-
     matrix = np.empty((submatriz_length), dtype=np.uint8)
     matrix = array
-
     return matrix
 
 def saveCSVfile(filename,data):
@@ -75,8 +73,8 @@ A matriz da imagem original será divida em 4 matrizes menores de tamanho 125x12
 Se fosse submatriz_height = 100 e  submatriz_width = 100, não seria possível devido 
 a divisão ser fracionária, resultando em uma matriz incompleta. 
 '''
-submatriz_height = 5
-submatriz_width = 5
+submatriz_height = 25
+submatriz_width = 25
 submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrizes
 
 '''
@@ -84,8 +82,13 @@ submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrize
 '''
 if __name__ == "__main__":
     # img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
-    img = cv2.imread('Dataset/Testing/fire/abc180.jpg')
-    # img = cv2.imread('Dataset/Testing/nofire/abc210.jpg')
+    # img = cv2.imread('Dataset/Testing/fire/abc184.jpg')
+    # img = cv2.imread('Dataset/Testing/fire/abc150.jpg')
+    img = cv2.imread('Dataset/Testing/nofire/abc191.jpg')
+
+    # Apply Gaussian blur to smooth the image (optional)
+    # img = cv2.GaussianBlur(src, (5, 5), 1)
+
     height, width, dim = img.shape
     # height, width = img.shape
     mBlue, mGreen, mRed = cv2.split(img)    # divide a imagem nas matrizes BGR
@@ -180,8 +183,9 @@ if __name__ == "__main__":
     inicioy = 0
     array_raw = np.zeros((submatriz_height,submatriz_width,dim))    # array nulo para casos que não contem dados relevantes
     for i in range(submatriz_num):
-        if(listClassSubmatrix[i].desv > 50):
+        if listClassSubmatrix[i].desv > 40 and (np.mean(listClassSubmatrix[i].Rmatrix / np.mean(listClassSubmatrix[i].Bmatrix))) > 1.5 and (np.mean(listClassSubmatrix[i].Rmatrix / np.mean(listClassSubmatrix[i].Gmatrix))) > 1.5:
             previmg = listClassSubmatrix[i].matrix.copy()
+            print(i)
         else:
             previmg = array_raw
         param_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
