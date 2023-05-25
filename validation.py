@@ -1,5 +1,5 @@
 """
-Created on maio 23 22:25:21 2023
+Created on maio 24 18:51:50 2023
 
 @author: Ânderson Felipe Weschenfelder
 """
@@ -45,8 +45,9 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configurar a localização par
 '''
         DIRETÓRIOS
 '''
-fireImageDir = 'Dataset/create/fire/*.jpg'
-nofireImageDir = 'Dataset/create/nofire/*.jpg'
+fireImageDir = 'Dataset/Testing/fire/*.jpg'
+nofireImageDir = 'Dataset/Testing/nofire/*.jpg'
+# nofireImageDir = 'Dataset/create/nofire/*.jpg'
 saveImageDir = 'Dataset/create/save/'
 
 '''
@@ -89,9 +90,10 @@ submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrize
 '''
 if __name__ == "__main__":
 
-    saveCSVfile(filename, header)  # cria o cabeçalho do arquivo CSV
-    files_list = glob.glob(fireImageDir)
+    # saveCSVfile(filename, header)  # cria o cabeçalho do arquivo CSV
+    files_list = glob.glob(nofireImageDir)
     imagemcount = 0
+    detectcount = 0
     for files in files_list:
         imagemcount += 1
         image_name = os.path.basename(files)
@@ -142,43 +144,9 @@ if __name__ == "__main__":
         # variáveis para demarcação de posição da matrix
         iniciox = 0
         inicioy = 0
-        # print("Valores de média e desvio padrão: \r\n")
         for i in range(submatriz_num):
             previmg = listClassSubmatrix[i].matrix.copy() # recebe a matriz do index i
-            # print("Submatriz [{}] -> Média = {:.3f}   Desvio padrão = {:.3f}".format(i, listClassSubmatrix[i].mean, listClassSubmatrix[i].desv))
 
-            meanall = locale.format_string('%.3f', listClassSubmatrix[i].mean)
-            desvall = locale.format_string('%.3f', listClassSubmatrix[i].desv)
-            median = locale.format_string('%.3f', np.median(listClassSubmatrix[i].matrix))
-            meanBlue =  np.mean(listClassSubmatrix[i].Bmatrix)
-            desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
-            meanGreen =  np.mean(listClassSubmatrix[i].Gmatrix)
-            desvGreen =  np.std(listClassSubmatrix[i].Gmatrix, axis=None)
-            meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
-            desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
-
-            ratio_mean_RG = locale.format_string('%.3f',(meanRed/meanGreen))
-            ratio_mean_RB = locale.format_string('%.3f', (meanRed / meanBlue))
-            ratio_desv_RG = locale.format_string('%.3f', (desvRed / desvGreen))
-            ratio_desv_RB = locale.format_string('%.3f', (desvRed / desvBlue))
-
-            meanBlue = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Bmatrix))
-            desvBlue = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Bmatrix, axis=None))
-            meanGreen = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Gmatrix))
-            desvGreen = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Gmatrix, axis=None))
-            meanRed = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Rmatrix))
-            desvRed = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Rmatrix, axis=None))
-            csvdata = [imagemcount, i, median, meanall, desvall, meanBlue, desvBlue, meanGreen, desvGreen,meanRed, desvRed,ratio_mean_RG,ratio_mean_RB,ratio_desv_RG,ratio_desv_RB]
-            saveCSVfile(filename, csvdata)
-
-            # Adicionar o texto na imagem
-            texto = "{}".format(i)
-            cv2.putText(previmg, texto, posicao, fonte, tamanho_fonte, cor, thickness=2)
-            # Adicionar um retângulo na imagem
-            end_point = (previmg.shape[0], previmg.shape[1])
-            previmg = cv2.rectangle(previmg, start_point,end_point, color, thickness)
-
-            # Adiciona a submatriz a nova imagem
             new_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
             # Desloca o inicio da altura da matriz considerando o tamanho de cada submatriz + borda
             inicioy += submatriz_width
@@ -190,7 +158,61 @@ if __name__ == "__main__":
             if iniciox == width :
                 iniciox = 0
 
-        caminho_destino = os.path.join(saveImageDir, ("Fireimagem{}_".format(imagemcount) + image_name))
-        cv2.imwrite(caminho_destino, new_image)
+
+        param_image = np.empty((height, width, dim), dtype=np.uint8)
+        iniciox = 0
+        inicioy = 0
+        array_raw = np.zeros(
+            (submatriz_height, submatriz_width, dim))  # array nulo para casos que não contem dados relevantes
+        detectflag = 0
+        for i in range(submatriz_num):
+            meanall = listClassSubmatrix[i].mean
+            desvall = listClassSubmatrix[i].desv
+            median = np.median(listClassSubmatrix[i].matrix)
+            meanBlue = np.mean(listClassSubmatrix[i].Bmatrix)
+            desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
+            meanGreen = np.mean(listClassSubmatrix[i].Gmatrix)
+            desvGreen = np.std(listClassSubmatrix[i].Gmatrix, axis=None)
+            meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
+            desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
+
+            ratio_mean_RG = 0
+            ratio_mean_RB = 0
+            ratio_desv_RG = 0
+            ratio_desv_RB = 10
+            ratio_desv_global = 0
+
+            if meanGreen > 0:
+                ratio_mean_RG = meanRed / meanGreen
+            if meanBlue > 0:
+                ratio_mean_RB = meanRed / meanBlue
+            if desvGreen > 0:
+                ratio_desv_RG = desvRed / desvGreen
+            if desvBlue > 0:
+                ratio_desv_RB = desvRed / desvBlue
+
+            if desvRed > 0:
+                ratio_desv_global = desvall/ desvRed
+
+            # if desvall > 40 and ratio_mean_RB > 1.5 and ratio_mean_RG > 1.5:
+            #     previmg = listClassSubmatrix[i].matrix.copy()
+
+            if desvall > 50 and ratio_desv_global > 1.1 and median > 100 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and meanRed > 120 and ratio_desv_RB < 5:
+                detectflag = 1
+
+            inicioy += submatriz_width
+            if inicioy == height:
+                inicioy = 0
+                iniciox += submatriz_height
+            if iniciox == width:
+                iniciox = 0
+        if detectflag:
+            detectcount += 1
+            print(image_name)
+
+print("De ",imagemcount," foram detectadas ",detectcount," imagens com fogo")
+
+        # caminho_destino = os.path.join(saveImageDir, ("Fireimagem{}_".format(imagemcount) + image_name))
+        # cv2.imwrite(caminho_destino, new_image)
 
 

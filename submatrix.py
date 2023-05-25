@@ -215,7 +215,7 @@ if __name__ == "__main__":
         ratio_mean_RG = meanRed / meanGreen
         ratio_mean_RB = meanRed / meanBlue
         ratio_desv_RG = desvRed / desvGreen
-        ratio_desv_RB = meanRed / desvBlue
+        ratio_desv_RB = desvRed / desvBlue
 
         ratio_desv_global = desvall/desvRed
 
