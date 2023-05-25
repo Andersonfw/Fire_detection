@@ -18,8 +18,15 @@ class submatrix:
         self.Rmatrix = mount_matrix(Rarray)
         self.matrix = cv2.merge((self.Bmatrix, self.Gmatrix, self.Rmatrix))
         self.index = index
-        self.mean = np.mean( self.matrix)
-        self.desv = np.std(self.matrix, axis=None)
+        self.meanall = np.mean( self.matrix)
+        self.desvall = np.std(self.matrix, axis=None)
+        self.medianall = np.median(self.matrix)
+        self.meanBlue = np.mean(self.Bmatrix)
+        self.desvBlue = np.std(self.Bmatrix, axis=None)
+        self.meanGreen = np.mean(self.Gmatrix)
+        self.desvGreen = np.std(self.Gmatrix, axis=None)
+        self.meanRed = np.mean(self.Rmatrix)
+        self.desvRed = np.std(self.Rmatrix, axis=None)
 
 def mount_matrix(array):
     global submatriz_length
@@ -36,7 +43,7 @@ def saveCSVfile(filename,data):
 '''
         CSV FILE
 '''
-filename = "tabela_medias.csv"  # Nome do arquivo CSV
+filename = "tabela_medias_1.csv"  # Nome do arquivo CSV
 header = ['index', 'mediana','mean global', 'desvio', 'mean blue', 'desv blue', 'mean green', 'desv green', 'mean red',
           'desv red', "R/G mean", "R/B mean", "R/G desv", "R/B desv"]   # Cabeçalho do arquivo CSV
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configurar a localização para usar a vírgula como separador decimal
@@ -89,8 +96,8 @@ submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrize
 if __name__ == "__main__":
     # img = cv2.imread('Dataset/Testing/fire/abc146.jpg', 0)
     # img = cv2.imread('Dataset/Testing/fire/abc184.jpg')
-    # img = cv2.imread('Dataset/Testing/nofire/abc317.jpg')
-    img = cv2.imread('Dataset/Testing/fire/abc050.jpg')
+    # img = cv2.imread('Dataset/Testing/nofire/abc376.jpg')
+    img = cv2.imread('Dataset/Testing/fire/abc060.jpg')
 
     # Apply Gaussian blur to smooth the image (optional)
     # img = cv2.GaussianBlur(src, (5, 5), 1)
@@ -152,20 +159,37 @@ if __name__ == "__main__":
         previmg = listClassSubmatrix[i].matrix.copy() # recebe a matriz do index i
         # print("Submatriz [{}] -> Média = {:.3f}   Desvio padrão = {:.3f}".format(i, listClassSubmatrix[i].mean, listClassSubmatrix[i].desv))
 
-        meanall = locale.format_string('%.3f', listClassSubmatrix[i].mean)
-        desvall = locale.format_string('%.3f', listClassSubmatrix[i].desv)
-        median = locale.format_string('%.3f', np.median(listClassSubmatrix[i].matrix))
-        meanBlue =  np.mean(listClassSubmatrix[i].Bmatrix)
-        desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
-        meanGreen =  np.mean(listClassSubmatrix[i].Gmatrix)
-        desvGreen =  np.std(listClassSubmatrix[i].Gmatrix, axis=None)
-        meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
-        desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
+        meanall = locale.format_string('%.3f', listClassSubmatrix[i].meanall)
+        desvall = locale.format_string('%.3f', listClassSubmatrix[i].desvall)
+        median = locale.format_string('%.3f', listClassSubmatrix[i].medianall)
+        meanBlue =  listClassSubmatrix[i].meanBlue
+        desvBlue = listClassSubmatrix[i].desvBlue
+        meanGreen =  listClassSubmatrix[i].meanGreen
+        desvGreen =  listClassSubmatrix[i].desvGreen
+        meanRed = listClassSubmatrix[i].meanRed
+        desvRed = listClassSubmatrix[i].desvRed
 
-        ratio_mean_RG = locale.format_string('%.3f',(meanRed/meanGreen))
-        ratio_mean_RB = locale.format_string('%.3f', (meanRed / meanBlue))
-        ratio_desv_RG = locale.format_string('%.3f', (desvRed / desvGreen))
-        ratio_desv_RB = locale.format_string('%.3f', (meanRed / desvBlue))
+        ratio_mean_RG = 0
+        ratio_mean_RB = 0
+        ratio_desv_RG = 0
+        ratio_desv_RB = 10
+        ratio_desv_global = 0
+
+        if meanGreen > 0:
+            ratio_mean_RG = meanRed / meanGreen
+        if meanBlue > 0:
+            ratio_mean_RB = meanRed / meanBlue
+        if desvGreen > 0:
+            ratio_desv_RG = desvRed / desvGreen
+        if desvBlue > 0:
+            ratio_desv_RB = desvRed / desvBlue
+        if desvRed > 0:
+            ratio_desv_global = listClassSubmatrix[i].desvall / desvRed
+
+        ratio_mean_RG = locale.format_string('%.3f',ratio_mean_RG)
+        ratio_mean_RB = locale.format_string('%.3f', ratio_mean_RB)
+        ratio_desv_RG = locale.format_string('%.3f', ratio_desv_RG)
+        ratio_desv_RB = locale.format_string('%.3f', ratio_desv_RB)
 
         meanBlue = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Bmatrix))
         desvBlue = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Bmatrix, axis=None))
@@ -202,27 +226,37 @@ if __name__ == "__main__":
     inicioy = 0
     array_raw = np.zeros((submatriz_height,submatriz_width,dim))    # array nulo para casos que não contem dados relevantes
     for i in range(submatriz_num):
-        meanall =listClassSubmatrix[i].mean
-        desvall = listClassSubmatrix[i].desv
-        median = np.median(listClassSubmatrix[i].matrix)
-        meanBlue =  np.mean(listClassSubmatrix[i].Bmatrix)
-        desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
-        meanGreen =  np.mean(listClassSubmatrix[i].Gmatrix)
-        desvGreen =  np.std(listClassSubmatrix[i].Gmatrix, axis=None)
-        meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
-        desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
 
-        ratio_mean_RG = meanRed / meanGreen
-        ratio_mean_RB = meanRed / meanBlue
-        ratio_desv_RG = desvRed / desvGreen
-        ratio_desv_RB = desvRed / desvBlue
+        meanall = listClassSubmatrix[i].meanall
+        desvall = listClassSubmatrix[i].desvall
+        median = listClassSubmatrix[i].medianall
+        meanBlue =  listClassSubmatrix[i].meanBlue
+        desvBlue = listClassSubmatrix[i].desvBlue
+        meanGreen =  listClassSubmatrix[i].meanGreen
+        desvGreen =  listClassSubmatrix[i].desvGreen
+        meanRed = listClassSubmatrix[i].meanRed
+        desvRed = listClassSubmatrix[i].desvRed
 
-        ratio_desv_global = desvall/desvRed
+        ratio_mean_RG = 0
+        ratio_mean_RB = 0
+        ratio_desv_RG = 0
+        ratio_desv_RB = 10
+        ratio_desv_global = 0
 
-        # if desvall > 40 and ratio_mean_RB > 1.5 and ratio_mean_RG > 1.5:
-        #     previmg = listClassSubmatrix[i].matrix.copy()
+        if meanGreen > 0:
+            ratio_mean_RG = meanRed / meanGreen
+        if meanBlue > 0:
+            ratio_mean_RB = meanRed / meanBlue
+        if desvGreen > 0:
+            ratio_desv_RG = desvRed / desvGreen
+        if desvBlue > 0:
+            ratio_desv_RB = desvRed / desvBlue
+        if desvRed > 0:
+            ratio_desv_global = listClassSubmatrix[i].desvall / desvRed
+
 
         if desvall > 50 and ratio_desv_global > 0.9 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and meanRed > 120 and ratio_desv_RB < 5:
+        # if desvall > 50 and ratio_desv_global > 1.1 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and ratio_desv_RB < 5:
             previmg = listClassSubmatrix[i].matrix.copy()
         else:
             previmg = array_raw

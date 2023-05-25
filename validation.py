@@ -19,8 +19,15 @@ class submatrix:
         self.Rmatrix = mount_matrix(Rarray)
         self.matrix = cv2.merge((self.Bmatrix, self.Gmatrix, self.Rmatrix))
         self.index = index
-        self.mean = np.mean( self.matrix)
-        self.desv = np.std(self.matrix, axis=None)
+        self.meanall = np.mean( self.matrix)
+        self.desvall = np.std(self.matrix, axis=None)
+        self.medianall = np.median(self.matrix)
+        self.meanBlue = np.mean(self.Bmatrix)
+        self.desvBlue = np.std(self.Bmatrix, axis=None)
+        self.meanGreen = np.mean(self.Gmatrix)
+        self.desvGreen = np.std(self.Gmatrix, axis=None)
+        self.meanRed = np.mean(self.Rmatrix)
+        self.desvRed = np.std(self.Rmatrix, axis=None)
 
 def mount_matrix(array):
     global submatriz_length
@@ -46,7 +53,9 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configurar a localização par
         DIRETÓRIOS
 '''
 fireImageDir = 'Dataset/Testing/fire/*.jpg'
+# fireImageDir = 'Dataset/Training and Validation/fire/*.jpg'
 nofireImageDir = 'Dataset/Testing/nofire/*.jpg'
+# nofireImageDir = 'Dataset/Training and Validation/nofire/*.jpg'
 # nofireImageDir = 'Dataset/create/nofire/*.jpg'
 saveImageDir = 'Dataset/create/save/'
 
@@ -166,38 +175,28 @@ if __name__ == "__main__":
             (submatriz_height, submatriz_width, dim))  # array nulo para casos que não contem dados relevantes
         detectflag = 0
         for i in range(submatriz_num):
-            meanall = listClassSubmatrix[i].mean
-            desvall = listClassSubmatrix[i].desv
-            median = np.median(listClassSubmatrix[i].matrix)
-            meanBlue = np.mean(listClassSubmatrix[i].Bmatrix)
-            desvBlue = np.std(listClassSubmatrix[i].Bmatrix, axis=None)
-            meanGreen = np.mean(listClassSubmatrix[i].Gmatrix)
-            desvGreen = np.std(listClassSubmatrix[i].Gmatrix, axis=None)
-            meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
-            desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
-
             ratio_mean_RG = 0
             ratio_mean_RB = 0
             ratio_desv_RG = 0
             ratio_desv_RB = 10
             ratio_desv_global = 0
 
-            if meanGreen > 0:
-                ratio_mean_RG = meanRed / meanGreen
-            if meanBlue > 0:
-                ratio_mean_RB = meanRed / meanBlue
-            if desvGreen > 0:
-                ratio_desv_RG = desvRed / desvGreen
-            if desvBlue > 0:
-                ratio_desv_RB = desvRed / desvBlue
+            if listClassSubmatrix[i].meanGreen > 0:
+                ratio_mean_RG = listClassSubmatrix[i].meanRed / listClassSubmatrix[i].meanGreen
+            if listClassSubmatrix[i].meanBlue > 0:
+                ratio_mean_RB = listClassSubmatrix[i].meanRed / listClassSubmatrix[i].meanBlue
+            if listClassSubmatrix[i].desvGreen > 0:
+                ratio_desv_RG = listClassSubmatrix[i].desvRed / listClassSubmatrix[i].desvGreen
+            if listClassSubmatrix[i].desvBlue > 0:
+                ratio_desv_RB = listClassSubmatrix[i].desvRed / listClassSubmatrix[i].desvBlue
 
-            if desvRed > 0:
-                ratio_desv_global = desvall/ desvRed
+            if listClassSubmatrix[i].desvRed > 0:
+                ratio_desv_global = listClassSubmatrix[i].desvall / listClassSubmatrix[i].desvRed
 
             # if desvall > 40 and ratio_mean_RB > 1.5 and ratio_mean_RG > 1.5:
             #     previmg = listClassSubmatrix[i].matrix.copy()
 
-            if desvall > 50 and ratio_desv_global > 1.1 and median > 100 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and meanRed > 120 and ratio_desv_RB < 5:
+            if listClassSubmatrix[i].desvall > 50 and ratio_desv_global > 1.1 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and ratio_desv_RB < 5:
                 detectflag = 1
 
             inicioy += submatriz_width
@@ -209,8 +208,11 @@ if __name__ == "__main__":
         if detectflag:
             detectcount += 1
             print(image_name)
+        # else:
+        #     print(image_name)
 
 print("De ",imagemcount," foram detectadas ",detectcount," imagens com fogo")
+print("% de erro/acerto: ",(detectcount/imagemcount)*100)
 
         # caminho_destino = os.path.join(saveImageDir, ("Fireimagem{}_".format(imagemcount) + image_name))
         # cv2.imwrite(caminho_destino, new_image)
