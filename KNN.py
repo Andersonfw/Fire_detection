@@ -1,28 +1,29 @@
 #%%
+import glob
+
 import pandas as pd
 import numpy as np
 import cv2
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
-import locale
-import os
-import glob
+
+
+'''
+        DIRETÓRIOS
+'''
+fireImageDirTest = 'Dataset/Training and Validation/fire/*.jpg'
+fireImageDirTraining = 'Dataset/Training and Validation/fire/*.jpg'
+nofireImageDirTest = 'Dataset/Testing/nofire/*.jpg'
+nofireImageDirTraining = 'Dataset/Testing/nofire/*.jpg'
 
 # %%
 # CREATING TRAIN DATASET FOR FIRE SAMPLES
-files_list = glob.glob('Dataset/create/fire/*.jpg')
-imagemcount = 0
-i = 0
+files_list = glob.glob(fireImageDirTraining)
+train_df_fire = pd.DataFrame()
 for files in files_list:
-
     img = cv2.imread(files, cv2.IMREAD_COLOR)
-    i += 1
-    if i == 1:
-        train_df_fire = pd.DataFrame(img.reshape(-1)).transpose()
-    else:
-        img_df  = pd.DataFrame(img.reshape(-1)).transpose()
-        train_df_fire = pd.concat([train_df_fire,img_df], ignore_index=True, axis=0)
-
+    img_df = pd.DataFrame(img.reshape(-1)).transpose()
+    train_df_fire = pd.concat([train_df_fire,img_df], ignore_index=True, axis=0)
 
 train_df_fire['Target'] = 1 # TARGET VARIABLE TO FLAG WHEN THERE IS FIRE
 #Target = 1 fire
@@ -30,27 +31,26 @@ train_df_fire['Target'] = 1 # TARGET VARIABLE TO FLAG WHEN THERE IS FIRE
 
 # %%
 print(train_df_fire.shape)
-train_df_fire.sample(n=15)
+# train_df_fire.sample(n=15)
 
 # %%
 # CREATING TRAIN DATASET FOR NON-FIRE SAMPLES
-for i in range(761):
-    img = cv2.imread('Dataset/Training and Validation/nofire/nofire_0'+str(i).zfill(3)+'.jpg', cv2.IMREAD_COLOR)
-    if img is not None:
-        if i == 1:
-            train_df_nofire = pd.DataFrame(img.reshape(-1)).transpose()
-        else:
-            img_df = pd.DataFrame(img.reshape(-1)).transpose()
-            train_df_nofire = pd.concat([train_df_nofire,img_df], ignore_index=True, axis=0)
+files_list = glob.glob(nofireImageDirTraining)
+train_df_nofire = pd.DataFrame()
+for files in files_list:
+    img = cv2.imread(files, cv2.IMREAD_COLOR)
+    img_df = pd.DataFrame(img.reshape(-1)).transpose()
+    train_df_nofire = pd.concat([train_df_nofire,img_df], ignore_index=True, axis=0)
 
 train_df_nofire['Target'] = 0 # TARGET VARIABLE TO FLAG WHEN THERE IS NO FIRE
 # %%
 print(train_df_nofire.shape)
-train_df_nofire.sample(n=15)
+# train_df_nofire.sample(n=15)
 # %%
 # CONCATENATING BOTH FIRE AND NON-FIRE DATASETS FOR TRAINING
 train_df = pd.concat([train_df_fire,train_df_nofire], ignore_index=True, axis=0)
 print(train_df.shape)
+# train_df
 
 #%%
 # SPLITING X and y DATASETS
@@ -69,63 +69,59 @@ knn_class.fit(X,y)
 
 # %%
 # CREATING TEST DATASET FOR FIRE SAMPLES
-for i in range(904):
-    #encoding
-    img = cv2.imread('dataset/Testing/fire/abc'+str(i).zfill(3)+'.jpg', cv2.IMREAD_COLOR)
-    if img is not None:
-        if i == 1:
-            test_df_fire = pd.DataFrame(img.reshape(-1)).transpose()
-        else:
-            img_df = pd.DataFrame(img.reshape(-1)).transpose()
-            test_df_fire = pd.concat([test_df_fire,img_df], ignore_index=True, axis=0)
+files_list = glob.glob(fireImageDirTest)
+test_df_fire = pd.DataFrame()
+for files in files_list:
+    img = cv2.imread(files, cv2.IMREAD_COLOR)
+    img_df = pd.DataFrame(img.reshape(-1)).transpose()
+    test_df_fire = pd.concat([test_df_fire,img_df], ignore_index=True, axis=0)
 
 test_df_fire['Target'] = 1 # TARGET VARIABLE TO FLAG WHEN THERE IS FIRE
 
 
 # %%
 print(test_df_fire.shape)
-test_df_fire.sample(n=15)
+# test_df_fire.sample(n=15)
 
 # %%
 # CREATING TEST DATASET FOR NON-FIRE SAMPLES
-for i in range(761):
-    img = cv2.imread('dataset/Testing/nofire/abc'+str(i).zfill(3)+'.jpg', cv2.IMREAD_COLOR)
-    if img is not None:
-        if i == 191:
-            test_df_nofire = pd.DataFrame(img.reshape(-1)).transpose()
-        else:
-            img_df = pd.DataFrame(img.reshape(-1)).transpose()
-            test_df_nofire = pd.concat([test_df_nofire,img_df], ignore_index=True, axis=0)
+files_list = glob.glob(nofireImageDirTest)
+test_df_nofire = pd.DataFrame()
+for files in files_list:
+    img = cv2.imread(files, cv2.IMREAD_COLOR)
+    img_df = pd.DataFrame(img.reshape(-1)).transpose()
+    test_df_nofire = pd.concat([test_df_nofire,img_df], ignore_index=True, axis=0)
 
 test_df_nofire['Target'] = 0 # TARGET VARIABLE TO FLAG WHEN THERE IS NO FIRE
 
 # %%
 print(test_df_nofire.shape)
-test_df_nofire.sample(n=15)
+# test_df_nofire.sample(n=15)
 
 # %%
 # CONCATENATING BOTH FIRE AND NON-FIRE DATASETS FOR TESTING
 test_df = pd.concat([test_df_fire,test_df_nofire], ignore_index=True, axis=0)
 print(test_df.shape)
-
+# test_df
 
 # %%
 X_test = test_df.copy()
 X_test.pop('Target')
 
 test_df['Predict'] = knn_class.predict(X_test)
-
+# test_df
 
 # %%
 # COMPARE TARGET AND PREDICT
 test_df.loc[test_df['Predict'] == test_df['Target'], 'Error'] = 0
 test_df.loc[test_df['Predict'] != test_df['Target'], 'Error'] = 1
-
+# test_df
 
 # %%
 # CONFUSION MATRIX
 tn, fp, fn, tp = confusion_matrix(test_df['Target'], test_df['Predict']).ravel()
-(tn, fp, fn, tp)
+# (tn, fp, fn, tp)
+print(tn, fp, fn, tp)
 
 # %%
 # ACCURACY
