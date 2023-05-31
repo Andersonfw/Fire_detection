@@ -52,10 +52,10 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configurar a localização par
 '''
         DIRETÓRIOS
 '''
-fireImageDir = 'Dataset/Testing/fire/*.jpg'
-# fireImageDir = 'Dataset/Training and Validation/fire/*.jpg'
-nofireImageDir = 'Dataset/Testing/nofire/*.jpg'
-# nofireImageDir = 'Dataset/Training and Validation/nofire/*.jpg'
+# fireImageDir = 'Dataset/Testing/fire/*.jpg'
+fireImageDir = 'Dataset/Training and Validation/fire/*.jpg'
+# nofireImageDir = 'Dataset/Testing/nofire/*.jpg'
+nofireImageDir = 'Dataset/Training and Validation/nofire/*.jpg'
 # nofireImageDir = 'Dataset/create/nofire/*.jpg'
 saveImageDir = 'Dataset/create/save/'
 
@@ -196,7 +196,7 @@ if __name__ == "__main__":
             # if desvall > 40 and ratio_mean_RB > 1.5 and ratio_mean_RG > 1.5:
             #     previmg = listClassSubmatrix[i].matrix.copy()
 
-            if listClassSubmatrix[i].desvall > 50 and ratio_desv_global > 1.1 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and ratio_desv_RB < 5:
+            if listClassSubmatrix[i].desvall > 50 and ratio_desv_global > 0.9 and ratio_mean_RB > 1.1 and ratio_mean_RG > 1.1 and ratio_desv_RB < 5:
                 detectflag = 1
 
             inicioy += submatriz_width
@@ -213,6 +213,7 @@ if __name__ == "__main__":
 
 print("De ",imagemcount," foram detectadas ",detectcount," imagens com fogo")
 print("% de erro/acerto: ",(detectcount/imagemcount)*100)
+print("% de erro/acerto: ",100 - (detectcount/imagemcount)*100)
 
         # caminho_destino = os.path.join(saveImageDir, ("Fireimagem{}_".format(imagemcount) + image_name))
         # cv2.imwrite(caminho_destino, new_image)
