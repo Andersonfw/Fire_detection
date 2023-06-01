@@ -35,21 +35,21 @@ def mount_matrix(array, submatriz_length):
 
 def mount_Dataframe(submatrixClass):
     df = pd.DataFrame(submatrixClass.matrix.copy().reshape(-1)).transpose()
-    dfb = pd.DataFrame(submatrixClass.Bmatrix.copy().reshape(-1)).transpose()
-    dfg = pd.DataFrame(submatrixClass.Gmatrix.copy().reshape(-1)).transpose()
-    dfr = pd.DataFrame(submatrixClass.Rmatrix.copy().reshape(-1)).transpose()
-    df = pd.concat([df, dfb], axis=1)
-    df = pd.concat([df, dfg], axis=1)
-    df = pd.concat([df, dfr], axis=1)
-    df[df.columns[-1] + 1] = submatrixClass.desvRed
-    df[df.columns[-1] + 1] = submatrixClass.desvBlue
-    df[df.columns[-1] + 1] = submatrixClass.desvGreen
-    df[df.columns[-1] + 1] = submatrixClass.desvall
-    df[df.columns[-1] + 1] = submatrixClass.meanBlue
-    df[df.columns[-1] + 1] = submatrixClass.meanGreen
-    df[df.columns[-1] + 1] = submatrixClass.meanRed
-    df[df.columns[-1] + 1] = submatrixClass.meanall
-    df[df.columns[-1] + 1] = submatrixClass.medianall
+    # dfb = pd.DataFrame(submatrixClass.Bmatrix.copy().reshape(-1)).transpose()
+    # dfg = pd.DataFrame(submatrixClass.Gmatrix.copy().reshape(-1)).transpose()
+    # dfr = pd.DataFrame(submatrixClass.Rmatrix.copy().reshape(-1)).transpose()
+    # df = pd.concat([df, dfb], axis=1)
+    # df = pd.concat([df, dfg], axis=1)
+    # df = pd.concat([df, dfr], axis=1)
+    # df[df.columns[-1] + 1] = submatrixClass.desvRed
+    # df[df.columns[-1] + 1] = submatrixClass.desvBlue
+    # df[df.columns[-1] + 1] = submatrixClass.desvGreen
+    # df[df.columns[-1] + 1] = submatrixClass.desvall
+    # df[df.columns[-1] + 1] = submatrixClass.meanBlue
+    # df[df.columns[-1] + 1] = submatrixClass.meanGreen
+    # df[df.columns[-1] + 1] = submatrixClass.meanRed
+    # df[df.columns[-1] + 1] = submatrixClass.meanall
+    # df[df.columns[-1] + 1] = submatrixClass.medianall
     return df
 def dividerImage (img, submatriz_height, submatriz_width, submatriz_length, dataframe=None):
 
