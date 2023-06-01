@@ -11,10 +11,10 @@ from sklearn.metrics import confusion_matrix
 '''
         DIRETÓRIOS
 '''
-fireImageDirTest = 'Dataset/Training and Validation/fire/*.jpg'
+fireImageDirTest = 'Dataset/Testing/fire/*.jpg'
 fireImageDirTraining = 'Dataset/Training and Validation/fire/*.jpg'
 nofireImageDirTest = 'Dataset/Testing/nofire/*.jpg'
-nofireImageDirTraining = 'Dataset/Testing/nofire/*.jpg'
+nofireImageDirTraining = 'Dataset/Training and Validation/nofire/*.jpg'
 
 # %%
 # CREATING TRAIN DATASET FOR FIRE SAMPLES
@@ -101,6 +101,7 @@ print(test_df_nofire.shape)
 # %%
 # CONCATENATING BOTH FIRE AND NON-FIRE DATASETS FOR TESTING
 test_df = pd.concat([test_df_fire,test_df_nofire], ignore_index=True, axis=0)
+# test_df = test_df_nofire
 print(test_df.shape)
 # test_df
 
@@ -120,8 +121,7 @@ test_df.loc[test_df['Predict'] != test_df['Target'], 'Error'] = 1
 # %%
 # CONFUSION MATRIX
 tn, fp, fn, tp = confusion_matrix(test_df['Target'], test_df['Predict']).ravel()
-# (tn, fp, fn, tp)
-print(tn, fp, fn, tp)
+print("tn, fp, fn, tp ", tn, fp, fn, tp)
 
 # %%
 # ACCURACY
@@ -139,7 +139,6 @@ print('False Positive Rate: '+str(FPR*100))
 # PRECISION
 Precision = tp/(fp + tp)
 print('Precision Rate: '+str(Precision*100))
-
 # F1 SCORE
 F1 = 2*(Precision*TPR)/(Precision+TPR)
 print('F1 Score: '+str(F1*100))
