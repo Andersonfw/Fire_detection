@@ -168,7 +168,7 @@ if __name__ == "__main__":
             desvGreen = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Gmatrix, axis=None))
             meanRed = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Rmatrix))
             desvRed = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Rmatrix, axis=None))
-            csvdata = [imagemcount, i, median, meanall, desvall, meanBlue, desvBlue, meanGreen, desvGreen,meanRed, desvRed,ratio_mean_RG,ratio_mean_RB,ratio_desv_RG,ratio_desv_RB]
+            csvdata = [image_name, i, median, meanall, desvall, meanBlue, desvBlue, meanGreen, desvGreen,meanRed, desvRed,ratio_mean_RG,ratio_mean_RB,ratio_desv_RG,ratio_desv_RB]
             saveCSVfile(filename, csvdata)
 
             # Adicionar o texto na imagem

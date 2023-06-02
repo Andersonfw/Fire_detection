@@ -28,7 +28,6 @@ class submatrix:
         self.desvRed = np.std(self.Rmatrix, axis=None)
 
 def mount_matrix(array, submatriz_length):
-    # global submatriz_length
     matrix = np.empty((submatriz_length), dtype=np.uint8)
     matrix = array
     return matrix
