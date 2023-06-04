@@ -71,7 +71,7 @@ def ImageTest(knn, imagename, submatriz_height, submatriz_width, plot=None):
     listClassSubmatrixTest, test_df = subM.dividerImage(img_test, submatriz_height, submatriz_width, submatriz_length,
                                                         True)
     teste = knn.predict(test_df)
-    print("Predict Result: ", teste)
+    # print("Predict Result: ", teste)
     '''
     Reconstrução da imagem considerando KNN parâmetros
     '''
@@ -119,6 +119,8 @@ def manualTest(knn, dir, submatriz_height, submatriz_width):
     submatriz_length = (submatriz_height, submatriz_width)
     imagemcount = 0
     files_list = glob.glob(dir)
+    print("test of detecting the position of fire in an image according to an images that is knows its true position")
+    print("Test of images in", dir)
     test_df = pd.DataFrame()  # Dataframe para salvar os dados de cada submatriz
     for files in files_list:
         imagemcount += 1
@@ -316,18 +318,18 @@ def manualTest(knn, dir, submatriz_height, submatriz_width):
                     test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
 
 
-            elif image_name == "fire_0690.jpg":
-                if (i >= 44 and i <= 46) or (i >= 50 and i <= 52) or (i >= 54 and i <= 56) or (
-                        i >= 60 and i <= 62):
-                    img_df = subM.mount_Dataframe(listClassSubmatrix[i])
-                    # img_df = pd.DataFrame(img.reshape(-1)).transpose()
-                    img_df['Target'] = 1
-                    test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
-                else:
-                    img_df = subM.mount_Dataframe(listClassSubmatrix[i])
-                    # img_df = pd.DataFrame(img.reshape(-1)).transpose()
-                    img_df['Target'] = 0
-                    test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
+            # elif image_name == "fire_0690.jpg":
+            #     if (i >= 44 and i <= 46) or (i >= 50 and i <= 52) or (i >= 54 and i <= 56) or (
+            #             i >= 60 and i <= 62):
+            #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+            #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+            #         img_df['Target'] = 1
+            #         test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
+            #     else:
+            #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+            #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+            #         img_df['Target'] = 0
+            #         test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
 
             # elif image_name == "fire_0697.jpg":
             #     if i == 37 or i == 46 or i == 56 or (i >= 60 and i <= 62) or (i >= 66 and i <= 67) or (
@@ -418,7 +420,9 @@ def manualTest(knn, dir, submatriz_height, submatriz_width):
             #         img_df['Target'] = 0
             #         test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
 
+
     X_test = test_df.copy()
+    print(X_test.shape)
     X_test.pop('Target')
 
     test_df['Predict'] = knn.predict(X_test)
@@ -453,8 +457,10 @@ def DirImageTest(knn, dir,submatriz_height, submatriz_width):
     imagemcount = 0
     detectCorrectcount = 0
     detectIncorrectcount = 0
+    print("test of detect images with fire")
     for i in range(2):
         files_list = glob.glob(dir[i])
+        print("Test of images in", dir[i])
         for files in files_list:
             imagemcount += 1
             image_name = os.path.basename(files)
@@ -473,7 +479,7 @@ def DirImageTest(knn, dir,submatriz_height, submatriz_width):
                 if i == 0:
                     detectIncorrectcount += 1
                     fn += 1
-                    print(image_name)
+                    # print(image_name)
                 else:
                     detectCorrectcount += 1
                     tn += 1

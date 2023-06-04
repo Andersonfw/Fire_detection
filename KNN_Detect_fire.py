@@ -76,7 +76,11 @@ if __name__ == "__main__":
             TREINAMENTO COM IMAGENS DE TESTE
     '''
     if os.path.exists(csvfile_training):
-        train_df = pd.read_csv(csvfile_training)
+
+        teste = pd.DataFrame()
+        teste = pd.read_csv(csvfile_training)
+        train_df = pd.DataFrame(teste.values)
+        train_df = train_df.rename(columns={train_df.columns[-1]: 'Target'})
     else:
         files_list = glob.glob(fireImageDirTraining)  # imagens contidas no diretório
         imagemcount = 0  # Contador e identificador de imagens
@@ -409,11 +413,9 @@ if __name__ == "__main__":
                 #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
                 #         img_df['Target'] = 0
                 #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
-        # train_df.to_csv(csvfile_training, index=False)
-        # teste = pd.read_csv(csvfile_training)
 
-        # if train_df.equals(teste):
-        #     print("igual")
+        # train_df.to_csv(csvfile_training, index=False)
+
     # SPLITING X and y DATASETS
     y = train_df['Target']
     print(y.shape)
@@ -431,12 +433,14 @@ if __name__ == "__main__":
     nofireImageDir = 'Dataset/Testing/nofire/*.jpg'
     dir = [fireImageDir, nofireImageDir]
 
-    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, True)
-    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
+    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, True)
+    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
 
     tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
 
-    # tn, fp, fn, tp = Ev.manualTest(knn_class, fireImageDirTesting, submatriz_height, submatriz_width)
+    Ev.TestEvaluation(tn, fp, fn, tp)
+
+    tn, fp, fn, tp = Ev.manualTest(knn_class, fireImageDirTesting, submatriz_height, submatriz_width)
 
     Ev.TestEvaluation(tn, fp, fn, tp)
 

@@ -33,22 +33,55 @@ def mount_matrix(array, submatriz_length):
     return matrix
 
 def mount_Dataframe(submatrixClass):
-    df = pd.DataFrame(submatrixClass.matrix.copy().reshape(-1)).transpose()
+    df = pd.DataFrame()
+    # df = pd.DataFrame(submatrixClass.matrix.copy().reshape(-1)).transpose()
     # dfb = pd.DataFrame(submatrixClass.Bmatrix.copy().reshape(-1)).transpose()
     # dfg = pd.DataFrame(submatrixClass.Gmatrix.copy().reshape(-1)).transpose()
     # dfr = pd.DataFrame(submatrixClass.Rmatrix.copy().reshape(-1)).transpose()
     # df = pd.concat([df, dfb], axis=1)
     # df = pd.concat([df, dfg], axis=1)
     # df = pd.concat([df, dfr], axis=1)
+    df[0] = [submatrixClass.desvRed]
     # df[df.columns[-1] + 1] = submatrixClass.desvRed
-    # df[df.columns[-1] + 1] = submatrixClass.desvBlue
-    # df[df.columns[-1] + 1] = submatrixClass.desvGreen
-    # df[df.columns[-1] + 1] = submatrixClass.desvall
-    # df[df.columns[-1] + 1] = submatrixClass.meanBlue
-    # df[df.columns[-1] + 1] = submatrixClass.meanGreen
-    # df[df.columns[-1] + 1] = submatrixClass.meanRed
-    # df[df.columns[-1] + 1] = submatrixClass.meanall
-    # df[df.columns[-1] + 1] = submatrixClass.medianall
+    df[df.columns[-1] + 1] = submatrixClass.desvBlue
+    df[df.columns[-1] + 1] = submatrixClass.desvGreen
+    df[df.columns[-1] + 1] = submatrixClass.desvall
+    df[df.columns[-1] + 1] = submatrixClass.meanBlue
+    df[df.columns[-1] + 1] = submatrixClass.meanGreen
+    df[df.columns[-1] + 1] = submatrixClass.meanRed
+    df[df.columns[-1] + 1] = submatrixClass.meanall
+    df[df.columns[-1] + 1] = submatrixClass.medianall
+
+    meanBlue = submatrixClass.meanBlue
+    desvBlue = submatrixClass.desvBlue
+    meanGreen = submatrixClass.meanGreen
+    desvGreen = submatrixClass.desvGreen
+    meanRed = submatrixClass.meanRed
+    desvRed = submatrixClass.desvRed
+
+    ratio_mean_RG = 0
+    ratio_mean_RB = 0
+    ratio_desv_RG = 0
+    ratio_desv_RB = 0
+    ratio_desv_global = 0
+
+    if meanGreen > 0:
+        ratio_mean_RG = meanRed / meanGreen
+    if meanBlue > 0:
+        ratio_mean_RB = meanRed / meanBlue
+    if desvGreen > 0:
+        ratio_desv_RG = desvRed / desvGreen
+    if desvBlue > 0:
+        ratio_desv_RB = desvRed / desvBlue
+    if desvRed > 0:
+        ratio_desv_global = submatrixClass.desvall / desvRed
+
+    df[df.columns[-1] + 1] = ratio_mean_RG
+    df[df.columns[-1] + 1] = ratio_mean_RB
+    df[df.columns[-1] + 1] = ratio_desv_RG
+    df[df.columns[-1] + 1] = ratio_desv_RB
+    df[df.columns[-1] + 1] = ratio_desv_global
+
     return df
 def dividerImage (img, submatriz_height, submatriz_width, submatriz_length, dataframe=None):
 

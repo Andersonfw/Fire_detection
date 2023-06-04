@@ -157,10 +157,21 @@ if __name__ == "__main__":
             meanRed = np.mean(listClassSubmatrix[i].Rmatrix)
             desvRed = np.std(listClassSubmatrix[i].Rmatrix, axis=None)
 
-            ratio_mean_RG = locale.format_string('%.3f',(meanRed/meanGreen))
-            ratio_mean_RB = locale.format_string('%.3f', (meanRed / meanBlue))
-            ratio_desv_RG = locale.format_string('%.3f', (desvRed / desvGreen))
-            ratio_desv_RB = locale.format_string('%.3f', (desvRed / desvBlue))
+            ratio_mean_RG = 0
+            ratio_mean_RB = 0
+            ratio_desv_RG = 0
+            ratio_desv_RB = 0
+            ratio_desv_global = 0
+
+            if meanGreen > 0:
+                ratio_mean_RG = locale.format_string('%.3f', (meanRed / meanGreen))
+            if meanBlue > 0:
+                ratio_mean_RB = locale.format_string('%.3f', (meanRed / meanBlue))
+            if desvGreen > 0:
+                ratio_desv_RG = locale.format_string('%.3f', (desvRed / desvGreen))
+            if desvBlue > 0:
+                ratio_desv_RB = locale.format_string('%.3f', (desvRed / desvBlue))
+
 
             meanBlue = locale.format_string('%.3f', np.mean(listClassSubmatrix[i].Bmatrix))
             desvBlue = locale.format_string('%.3f', np.std(listClassSubmatrix[i].Bmatrix, axis=None))
