@@ -119,7 +119,7 @@ def manualTest(knn, dir, submatriz_height, submatriz_width):
     submatriz_length = (submatriz_height, submatriz_width)
     imagemcount = 0
     files_list = glob.glob(dir)
-    print("test of detecting the position of fire in an image according to an images that is knows its true position")
+    print("\r\n\n\ntest of detecting the position of fire in an image according to an images that is knows its true position")
     print("Test of images in", dir)
     test_df = pd.DataFrame()  # Dataframe para salvar os dados de cada submatriz
     for files in files_list:
@@ -457,7 +457,7 @@ def DirImageTest(knn, dir,submatriz_height, submatriz_width):
     imagemcount = 0
     detectCorrectcount = 0
     detectIncorrectcount = 0
-    print("test of detect images with fire")
+    print("\r\n\n\ntest of detect images with fire")
     for i in range(2):
         files_list = glob.glob(dir[i])
         print("Test of images in", dir[i])
