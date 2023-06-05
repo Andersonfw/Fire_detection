@@ -10,12 +10,14 @@ import datetime
 import os
 import glob
 import cv2 as cv2
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 import submatrix as subM
 import Evalution_Test as Ev
+
 
 '''
         DIRETÓRIOS
@@ -64,7 +66,6 @@ a divisão ser fracionária, resultando em uma matriz incompleta.
 submatriz_height = 25
 submatriz_width = 25
 submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrizes
-
 '''
         Main
 '''
@@ -232,7 +233,6 @@ if __name__ == "__main__":
                         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
                         img_df['Target'] = 0
                         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
-
 
 ##########################################################################################################
 
@@ -416,6 +416,21 @@ if __name__ == "__main__":
 
         # train_df.to_csv(csvfile_training, index=False)
 
+    fireboxplot = train_df[train_df['Target'] == 1].copy()
+    nofirefboxplot = train_df[train_df['Target'] == 0].copy()
+    nofirefboxplot = nofirefboxplot.rename(columns={0: 'DesvR'},)
+    plt.boxplot(fireboxplot.values)
+    # Configurar rótulos dos eixos
+    plt.xticks(range(1, len(fireboxplot.columns) + 1), fireboxplot.columns)
+    plt.ylabel('Valores com fogo')
+    plt.figure()
+    plt.boxplot(nofirefboxplot.values)
+    # Configurar rótulos dos eixos
+    plt.xticks(range(1, len(nofirefboxplot.columns) + 1), nofirefboxplot.columns)
+    plt.ylabel('Valores sem fogo')
+    # Exibir o gráfico
+    plt.show()
+
     # SPLITING X and y DATASETS
     y = train_df['Target']
     print(y.shape)
@@ -433,8 +448,8 @@ if __name__ == "__main__":
     nofireImageDir = 'Dataset/Testing/nofire/*.jpg'
     dir = [fireImageDir, nofireImageDir]
 
-    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, True)
-    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
+    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, True)
+    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
 
     tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
 
