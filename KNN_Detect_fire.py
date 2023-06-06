@@ -417,16 +417,18 @@ if __name__ == "__main__":
         # train_df.to_csv(csvfile_training, index=False)
 
     fireboxplot = train_df[train_df['Target'] == 1].copy()
-    nofirefboxplot = train_df[train_df['Target'] == 0].copy()
-    nofirefboxplot = nofirefboxplot.rename(columns={0: 'DesvR'},)
+    nofireboxplot = train_df[train_df['Target'] == 0].copy()
+    nofireboxplot = nofireboxplot.rename(columns={0: 'D_R', 1: 'D_B', 2: 'D_G', 3: 'D_A', 4: 'm_R', 5: 'm_B', 6: 'm_G', 7: 'm_A', 8: "median"})
+    fireboxplot = fireboxplot.rename(columns={0: 'D_R', 1: 'D_B', 2: 'D_G', 3: 'D_A', 4: 'm_R', 5: 'm_B', 6: 'm_G', 7: 'm_A', 8: "median"})
+
     plt.boxplot(fireboxplot.values)
     # Configurar rótulos dos eixos
     plt.xticks(range(1, len(fireboxplot.columns) + 1), fireboxplot.columns)
     plt.ylabel('Valores com fogo')
     plt.figure()
-    plt.boxplot(nofirefboxplot.values)
+    plt.boxplot(nofireboxplot.values)
     # Configurar rótulos dos eixos
-    plt.xticks(range(1, len(nofirefboxplot.columns) + 1), nofirefboxplot.columns)
+    plt.xticks(range(1, len(nofireboxplot.columns) + 1), nofireboxplot.columns)
     plt.ylabel('Valores sem fogo')
     # Exibir o gráfico
     plt.show()
@@ -449,7 +451,7 @@ if __name__ == "__main__":
     dir = [fireImageDir, nofireImageDir]
 
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, True)
-    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
+    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
 
     tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
 
