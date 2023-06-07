@@ -17,7 +17,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 import submatrix as subM
 import Evalution_Test as Ev
-import boxplot as blp
+import boxplot as bpl
 
 '''
         DIRETÓRIOS
@@ -69,6 +69,9 @@ submatriz_length = (submatriz_height, submatriz_width)  # Tamanho das submatrize
 '''
         Main
 '''
+csvtestResult = "csvtestResult.csv"
+dfresult = pd.DataFrame()
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 if __name__ == "__main__":
 
     starTime = datetime.datetime.now()
@@ -79,11 +82,19 @@ if __name__ == "__main__":
     if os.path.exists(csvfile_training):
 
         teste = pd.DataFrame()
-        teste = pd.read_csv(csvfile_training)
+        teste = pd.read_csv(csvtestResult)
         train_df = pd.DataFrame(teste.values)
         train_df = train_df.rename(columns={train_df.columns[-1]: 'Target'})
     else:
+        if not os.path.exists(csvtestResult):
+            columns = ['time', 'img_train_num', 'img_test_num', 'Features_num', 'tn', 'fp', 'fn', 'tp', 'accuracy', 'TPR', 'FPR', 'Precision', 'F1', 'PLR']
+            testeTesting = pd.DataFrame(columns=columns)
+        else:
+            testeTesting = pd.read_csv(csvtestResult, delimiter=';')
+
+        dfresult['time'] = [starTime.strftime("%H:%M:%S")]
         files_list = glob.glob(fireImageDirTraining)  # imagens contidas no diretório
+
         imagemcount = 0  # Contador e identificador de imagens
         train_df = pd.DataFrame()  # Dataframe para salvar os dados de cada submatriz
         for files in files_list:
@@ -234,28 +245,28 @@ if __name__ == "__main__":
                         img_df['Target'] = 0
                         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
 
-                elif image_name == "fire_0108.jpg":
-                    if i == 18  or i == 28 or (i >= 37 and i <= 38) or (i >= 47 and i <= 48):
-                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
-                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
-                        img_df['Target'] = 1
-                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
-                    else:
-                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
-                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
-                        img_df['Target'] = 0
-                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
-                elif image_name == "fire_0169.jpg":
-                    if (i >= 30 and i <= 33) or (i >= 35 and i <= 36) or (i >= 46 and i <= 47) or i == 57:
-                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
-                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
-                        img_df['Target'] = 1
-                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
-                    else:
-                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
-                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
-                        img_df['Target'] = 0
-                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                # elif image_name == "fire_0108.jpg":
+                #     if i == 18  or i == 28 or (i >= 37 and i <= 38) or (i >= 47 and i <= 48):
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 1
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                #     else:
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 0
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                # elif image_name == "fire_0169.jpg":
+                #     if (i >= 30 and i <= 33) or (i >= 35 and i <= 36) or (i >= 46 and i <= 47) or i == 57:
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 1
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                #     else:
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 0
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
                 elif image_name == "fire_0194.jpg":
                     if i == 5 or (i >= 12 and i <= 16) or (i >= 22 and i <= 26) or (i >= 32 and i <= 37) or (i >= 42 and i <= 47) \
                             or (i >= 52 and i <= 58) or (i >= 63 and i <= 68) or (i >= 74 and i <= 76) or i == 78:
@@ -271,6 +282,234 @@ if __name__ == "__main__":
                 elif image_name == "fire_0261.jpg":
                     if i == 4 or i == 35 or (i >= 38 and i <= 39) or (i >= 50 and i <= 51) or (i >= 60 and i <= 61) or i == 68 or \
                             (i >= 70 and i <= 75) or (i >= 80 and i <= 87) or (i >= 90 and i <= 94):
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             # #############################################################
+             #    elif image_name == "fire_0005.jpg":
+             #        if i == 32 or (i >= 51 and i <= 52) or i == 56 or i == 61 or (i >= 64 and i <= 66) or (i >= 74 and i <= 76) or \
+             #                (i >= 82 and i <= 85) or i == 87 or (i >= 92 and i <= 94):
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0085.jpg":
+             #        if i == 34 or (i >= 40 and i <= 45) or (i >= 50 and i <= 55) or (i >= 57 and i <= 66) or \
+             #                (i >= 73 and i <= 76) or (i >= 80 and i <= 81) or (i >= 90 and i <= 91):
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0138.jpg":
+             #        if i == 30 or i == 40 or (i >= 50 and i <= 51) or (i >= 53 and i <= 54) or i == 57 or i == 60 or (i >= 63 and i <= 64) or\
+             #            (i >= 66 and i <= 67) or i == 69 or (i >= 73 and i <= 77):
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0209.jpg":
+             #        if i == 13 or i == 33 or (i >= 43 and i <= 44) or (i >= 53 and i <= 55) or (i >= 62 and i <= 67) or \
+             #                (i >= 72 and i <= 76) or (i >= 82 and i <= 87):
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0262.jpg":
+             #        if i == 44 or i == 49 or i == 59 or i == 69:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0308.jpg":
+             #        if i == 45 or (i >= 54 and i <= 55) or i == 59 or i == 61 or (i >= 64 and i <= 66) or (i >= 69 and i <= 70) \
+             #                or (i >= 72 and i <= 79) or (i >= 82 and i <= 89) or i == 99:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0359.jpg":
+             #        if (i >= 57 and i <= 59) or (i >= 67 and i <= 69) or (i >= 76 and i <= 79) or i == 90:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #    elif image_name == "fire_0482.jpg":
+             #        if i == 87 or i == 99 or (i >= 80 and i <= 83) or (i >= 89 and i <= 93) or (i >= 96 and i <= 97):
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 1
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+             #        else:
+             #            img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+             #            # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+             #            img_df['Target'] = 0
+             #            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+
+                ###################################################
+
+                ###################################################
+
+
+                elif image_name == "fire_0087.jpg":
+                    if i == 67 or (i >= 75 and i <= 76) or (i >= 86 and i <= 87) or i == 89:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0107.jpg":
+                    if (i >= 8 and i <= 9) or (i >= 17 and i <= 19) or (i >= 28 and i <= 29) or \
+                            (i >= 38 and i <= 39) or (i >= 47 and i <= 49) or (i >= 58 and i <= 59) or (i >= 67 and i <= 68):
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0120.jpg":
+                    if (i >= 15 and i <= 17) or (i >= 25 and i <= 26) or (i >= 35 and i <= 36) or (i >= 45 and i <= 46) or (i >= 55 and i <= 56) or (i >= 64 and i <= 66) \
+                        or (i >= 74 and i <= 76) or (i >= 83 and i <= 87) or (i >= 91 and i <= 97):
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0167.jpg":
+                    if (i >= 40 and i <= 43) or (i >= 47 and i <= 49) or (i >= 56 and i <= 59) \
+                            or (i >= 67 and i <= 69) or (i >= 78 and i <= 79) or i == 89:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0367.jpg":
+                    if (i >= 60 and i <= 61) or (i >= 70 and i <= 71) or (i >= 74 and i <= 75) or (i >= 84 and i <= 85):
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0554.jpg":
+                    if i == 56 or (i >= 64 and i <= 65) or i == 73 or i == 82:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+
+
+                ##################################################
+                ##################################################
+                # elif image_name == "fire_0035.jpg":
+                #     # if (i >= 40 and i <= 43) or (i >= 47 and i <= 49) or (i >= 56 and i <= 59) \
+                #     #         or (i >= 67 and i <= 69) or (i >= 78 and i <= 79) or i == 89:
+                #     img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #     # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #     img_df['Target'] = 1
+                #     train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                #     # else:
+                #     #     img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #     #     # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #     #     img_df['Target'] = 0
+                #     #     train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                # elif image_name == "fire_0045.jpg":
+                #     if (i >= 6 and i <= 61) or i == 63 or  (i >= 65 and i <= 71) or i == 73 or (i >= 75 and i <= 79) \
+                #             or i == 82 or i == 86 or i == 93 or (i >= 92 and i <= 93) or (i >= 96 and i <= 99):
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 1
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                #     else:
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 0
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                # elif image_name == "fire_0444.jpg":
+                #     if(i >= 3 and i <= 9) or (i >= 13 and i <= 19) or (i >= 23 and i <= 29) or (i >= 33 and i <= 39) \
+                #         or (i >= 43 and i <= 49) or (i >= 54 and i <= 61) or (i >= 64 and i <= 71) or (i >= 74 and i <= 81) \
+                #         or (i >= 85 and i <= 89) or (i >= 96 and i <= 99):
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 1
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                #     else:
+                #         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                #         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                #         img_df['Target'] = 0
+                #         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+
+
+                ##################################################
+                ##################################################
+
+                elif image_name == "fire_0718.jpg":
+                    if (i >= 14 and i <= 15) or (i >= 23 and i <= 24) or (i >= 43 and i <= 44) or \
+                            (i >= 52 and i <= 54) or (i >= 62 and i <= 65) or (i >= 72 and i <= 75) \
+                            or (i >= 82 and i <= 86) or (i >= 93 and i <= 97):
                         img_df = subM.mount_Dataframe(listClassSubmatrix[i])
                         # img_df = pd.DataFrame(img.reshape(-1)).transpose()
                         img_df['Target'] = 1
@@ -469,11 +708,16 @@ if __name__ == "__main__":
 
 
     plt.figure()
-    blp.plotboxplot(train_df.copy())
-    plt.show()
+    bpl.plotboxplot(train_df.copy())
+    # plt.show()
 
     # SPLITING X and y DATASETS
     y = train_df['Target']
+    nofireparts = np.array(train_df['Target'].iloc[list(y == 0)]).flatten()
+    fireparts = np.array(train_df['Target'].iloc[list(y == 1)]).flatten()
+
+    print("Fire parts: ", len(fireparts), "No fire parts",len(nofireparts))
+
     print(y.shape)
 
 
@@ -496,10 +740,37 @@ if __name__ == "__main__":
 
     # Ev.TestEvaluation(tn, fp, fn, tp)
 
-    tn, fp, fn, tp = Ev.manualTest(knn_class, fireImageDirTesting, submatriz_height, submatriz_width)
+    tn, fp, fn, tp, test_df = Ev.manualTest(knn_class, fireImageDirTesting, submatriz_height, submatriz_width)
 
     Ev.TestEvaluation(tn, fp, fn, tp)
 
+    plt.figure()
+    bpl.plotboxplot(test_df)
+    plt.show()
+    accuracy = (tp + tn) / (tn + fp + fn + tp)
+    TPR = tp / (tp + fn)
+    FPR = fp / (fp + tn)
+    Precision = tp / (fp + tp)
+    F1 = 2 * (Precision * TPR) / (Precision + TPR)
+    PLR = TPR / FPR
+
+    dfresult['img_train_num'] = locale.format_string('%.3f', (X.shape[0]/100))
+    dfresult['img_test_num'] = locale.format_string('%.3f', (test_df.shape[0]/100))
+    dfresult['Features_num'] = locale.format_string('%.3f', (X.shape[1]))
+    dfresult['tn'] = locale.format_string('%.3f', (tn))
+    dfresult['fp'] = locale.format_string('%.3f', (fp))
+    dfresult['fn'] = locale.format_string('%.3f', (fn))
+    dfresult['tp'] = locale.format_string('%.3f', (tp))
+    dfresult['accuracy'] = locale.format_string('%.3f', (accuracy * 100))
+    dfresult['TPR'] = locale.format_string('%.3f', (TPR * 100))
+    dfresult['FPR'] = locale.format_string('%.3f', (FPR * 100))
+    dfresult['Precision'] = locale.format_string('%.3f', (Precision * 100))
+    dfresult['F1'] = locale.format_string('%.3f', (F1 * 100))
+    dfresult['PLR'] = locale.format_string('%.3f', (PLR))
+
+    testeTesting = pd.concat([testeTesting, dfresult], ignore_index=True, axis=0)
+
+    testeTesting.to_csv(csvtestResult, index=False, sep=';')
     stopTime = datetime.datetime.now()
     diftime = stopTime - starTime
     print("Encerando a simulação em: ", stopTime.strftime("%H:%M:%S"))

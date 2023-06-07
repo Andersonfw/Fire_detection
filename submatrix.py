@@ -45,11 +45,13 @@ def mount_Dataframe(submatrixClass):
     # df = pd.concat([df, dfg], axis=1)
     # df = pd.concat([df, dfr], axis=1)
     df[0] = [submatrixClass.desvRed]
+    # df[0] = [submatrixClass.desvall]
     # df[0] = [np.std(padronizar(submatrixClass.Rmatrix.copy())[0], axis=None)]
     # df[df.columns[-1] + 1] = submatrixClass.desvRed
 
-    df[df.columns[-1] + 1] = submatrixClass.desvBlue
+    #
     df[df.columns[-1] + 1] = submatrixClass.desvGreen
+    df[df.columns[-1] + 1] = submatrixClass.desvBlue
     df[df.columns[-1] + 1] = submatrixClass.desvall
     # df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
     df[df.columns[-1] + 1] = submatrixClass.meanRed
@@ -76,7 +78,7 @@ def mount_Dataframe(submatrixClass):
     df[df.columns[-1] + 1] = np.min(submatrixClass.Rmatrix)
     # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Gmatrix, axis=None)
     # df[df.columns[-1] + 1] = np.median(padronizar(submatrixClass.Rmatrix.copy())[0])
-    df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Rmatrix)
     # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Gmatrix)
     # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Bmatrix)
     # df[df.columns[-1] + 1] = np.var(submatrixClass.Rmatrix)
