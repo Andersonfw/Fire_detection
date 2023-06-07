@@ -5,6 +5,9 @@ Created on maio 31 12:10:55 2023
 """
 import os
 import glob
+import statistics
+from scipy import stats
+
 import cv2 as cv2
 import numpy as np
 import pandas as pd
@@ -17,7 +20,7 @@ class submatrix:
         self.Rmatrix = mount_matrix(Rarray, submatriz_length)
         self.matrix = cv2.merge((self.Bmatrix, self.Gmatrix, self.Rmatrix))
         self.index = index
-        self.meanall = np.mean( self.matrix)
+        self.meanall = np.mean(self.matrix)
         self.desvall = np.std(self.matrix, axis=None)
         self.medianall = np.median(self.matrix)
         self.meanBlue = np.mean(self.Bmatrix)
@@ -42,17 +45,41 @@ def mount_Dataframe(submatrixClass):
     # df = pd.concat([df, dfg], axis=1)
     # df = pd.concat([df, dfr], axis=1)
     df[0] = [submatrixClass.desvRed]
+    # df[0] = [np.std(padronizar(submatrixClass.Rmatrix.copy())[0], axis=None)]
     # df[df.columns[-1] + 1] = submatrixClass.desvRed
+
     df[df.columns[-1] + 1] = submatrixClass.desvBlue
     df[df.columns[-1] + 1] = submatrixClass.desvGreen
     df[df.columns[-1] + 1] = submatrixClass.desvall
+    # df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
     df[df.columns[-1] + 1] = submatrixClass.meanRed
-    df[df.columns[-1] + 1] = submatrixClass.meanBlue
+    # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Bmatrix.copy())[0],  axis=None)
+    # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Gmatrix.copy())[0],  axis=None)
+    # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.matrix.copy())[0],  axis=None)
+    # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.Rmatrix.copy())[0])
+    # df[df.columns[-1] + 1] = submatrixClass.meanBlue
+    # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.Gmatrix.copy())[0])
+    # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.matrix.copy())[0])
+    # df[df.columns[-1] + 1] = np.median(padronizar(submatrixClass.matrix.copy())[0])
     df[df.columns[-1] + 1] = submatrixClass.meanGreen
     df[df.columns[-1] + 1] = submatrixClass.meanall
+    # df[df.columns[-1] + 1] = (submatrixClass.meanRed + submatrixClass.meanGreen + submatrixClass.meanBlue) / 3
     df[df.columns[-1] + 1] = submatrixClass.medianall
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Bmatrix)
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
+    df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
+    df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Gmatrix.flatten()))
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Gmatrix, axis=None)
+    df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Rmatrix, axis=None)
+    # df[df.columns[-1] + 1] = np.max(submatrixClass.Rmatrix) - np.min(submatrixClass.Rmatrix)
+    df[df.columns[-1] + 1] = np.min(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Gmatrix, axis=None)
+    # df[df.columns[-1] + 1] = np.median(padronizar(submatrixClass.Rmatrix.copy())[0])
+    df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Gmatrix)
+    # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Bmatrix)
     # df[df.columns[-1] + 1] = np.var(submatrixClass.Rmatrix)
-    # conv = np.mean(np.cov(submatrixClass.Rmatrix, submatrixClass.matrix))
     # df[df.columns[-1] + 1] = np.mean(np.cov(submatrixClass.Rmatrix, submatrixClass.Gmatrix))
     # df[df.columns[-1] + 1] = np.mean(np.cov(submatrixClass.Rmatrix, submatrixClass.Bmatrix))
     # meanBlue = submatrixClass.meanBlue
@@ -86,6 +113,23 @@ def mount_Dataframe(submatrixClass):
     # df[df.columns[-1] + 1] = ratio_desv_global
 
     return df
+
+def padronizar(entrada):
+    if entrada.std() == 0:
+        return 0,0,0
+    return (entrada - entrada.mean())/(entrada.std()), entrada.mean(),entrada.std()
+def entropyCalcGrayScale(imagem):
+    entropy = 0
+    tam_imagem = imagem.shape
+    total = tam_imagem[0] * tam_imagem[1]
+    hist = cv2.calcHist([imagem], [0], None, [256], [0, 256])
+    for i in range(len(hist)):
+        if (hist[i] > 0):
+            temp = (hist[i] / total) * np.log2(hist[i] / total)
+            entropy = entropy + temp
+
+    entropy = entropy[0] * -1
+    return entropy
 def dividerImage (img, submatriz_height, submatriz_width, submatriz_length, dataframe=None):
 
     blue = 0  # index da matriz blue da imagem

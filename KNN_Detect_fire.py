@@ -17,7 +17,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 import submatrix as subM
 import Evalution_Test as Ev
-
+import boxplot as blp
 
 '''
         DIRETÓRIOS
@@ -234,6 +234,54 @@ if __name__ == "__main__":
                         img_df['Target'] = 0
                         train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
 
+                elif image_name == "fire_0108.jpg":
+                    if i == 18  or i == 28 or (i >= 37 and i <= 38) or (i >= 47 and i <= 48):
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0169.jpg":
+                    if (i >= 30 and i <= 33) or (i >= 35 and i <= 36) or (i >= 46 and i <= 47) or i == 57:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0194.jpg":
+                    if i == 5 or (i >= 12 and i <= 16) or (i >= 22 and i <= 26) or (i >= 32 and i <= 37) or (i >= 42 and i <= 47) \
+                            or (i >= 52 and i <= 58) or (i >= 63 and i <= 68) or (i >= 74 and i <= 76) or i == 78:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                elif image_name == "fire_0261.jpg":
+                    if i == 4 or i == 35 or (i >= 38 and i <= 39) or (i >= 50 and i <= 51) or (i >= 60 and i <= 61) or i == 68 or \
+                            (i >= 70 and i <= 75) or (i >= 80 and i <= 87) or (i >= 90 and i <= 94):
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 1
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                    else:
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[i])
+                        # img_df = pd.DataFrame(img.reshape(-1)).transpose()
+                        img_df['Target'] = 0
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+
+
 ##########################################################################################################
 
                 # if image_name == "fire_0008.jpg":
@@ -416,21 +464,12 @@ if __name__ == "__main__":
 
         # train_df.to_csv(csvfile_training, index=False)
 
-    fireboxplot = train_df[train_df['Target'] == 1].copy()
-    nofireboxplot = train_df[train_df['Target'] == 0].copy()
-    nofireboxplot = nofireboxplot.rename(columns={0: 'D_R', 1: 'D_B', 2: 'D_G', 3: 'D_A', 4: 'm_R', 5: 'm_B', 6: 'm_G', 7: 'm_A', 8: "median"})
-    fireboxplot = fireboxplot.rename(columns={0: 'D_R', 1: 'D_B', 2: 'D_G', 3: 'D_A', 4: 'm_R', 5: 'm_B', 6: 'm_G', 7: 'm_A', 8: "median"})
+    # fireboxplot = train_df[train_df['Target'] == 1].copy()
+    # nofireboxplot = train_df[train_df['Target'] == 0].copy()
 
-    plt.boxplot(fireboxplot.values)
-    # Configurar rótulos dos eixos
-    plt.xticks(range(1, len(fireboxplot.columns) + 1), fireboxplot.columns)
-    plt.ylabel('Valores com fogo')
+
     plt.figure()
-    plt.boxplot(nofireboxplot.values)
-    # Configurar rótulos dos eixos
-    plt.xticks(range(1, len(nofireboxplot.columns) + 1), nofireboxplot.columns)
-    plt.ylabel('Valores sem fogo')
-    # Exibir o gráfico
+    blp.plotboxplot(train_df.copy())
     plt.show()
 
     # SPLITING X and y DATASETS
@@ -451,11 +490,11 @@ if __name__ == "__main__":
     dir = [fireImageDir, nofireImageDir]
 
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, True)
-    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
+    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
 
-    tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
+    # tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
 
-    Ev.TestEvaluation(tn, fp, fn, tp)
+    # Ev.TestEvaluation(tn, fp, fn, tp)
 
     tn, fp, fn, tp = Ev.manualTest(knn_class, fireImageDirTesting, submatriz_height, submatriz_width)
 
