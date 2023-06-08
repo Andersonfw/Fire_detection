@@ -46,14 +46,14 @@ def mount_Dataframe(submatrixClass):
     # df = pd.concat([df, dfr], axis=1)
     df[0] = [submatrixClass.desvRed]
     # df[0] = [submatrixClass.desvall]
-    # df[0] = [np.std(padronizar(submatrixClass.Rmatrix.copy())[0], axis=None)]
+    # df[0] = [np.std(padronizar(submatrixClass.Rmatrix.copy())[0], axis=None)], minimu
     # df[df.columns[-1] + 1] = submatrixClass.desvRed
 
     #
     df[df.columns[-1] + 1] = submatrixClass.desvGreen
     df[df.columns[-1] + 1] = submatrixClass.desvBlue
-    df[df.columns[-1] + 1] = submatrixClass.desvall
-    # df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
+    # df[df.columns[-1] + 1] = submatrixClass.desvall
+    df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
     df[df.columns[-1] + 1] = submatrixClass.meanRed
     # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Bmatrix.copy())[0],  axis=None)
     # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Gmatrix.copy())[0],  axis=None)
@@ -68,7 +68,7 @@ def mount_Dataframe(submatrixClass):
     # df[df.columns[-1] + 1] = (submatrixClass.meanRed + submatrixClass.meanGreen + submatrixClass.meanBlue) / 3
     df[df.columns[-1] + 1] = submatrixClass.medianall
     # df[df.columns[-1] + 1] = np.median(submatrixClass.Bmatrix)
-    # df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
+    df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
     df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
     df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
     # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Gmatrix.flatten()))
