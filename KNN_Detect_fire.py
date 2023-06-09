@@ -64,6 +64,7 @@ blue = 0  # index da matriz blue da imagem
 green = 1  # index da matriz green da imagem
 red = 2  # index da matriz red da imagem
 listClassSubmatrix = []  # array de classes da submatrizes
+listClassSubmatrixY = []  # array de classes da submatrizes
 
 ''' CONFIGURAÇÕES PARA INSERIR TEXTO NA IMAGEM'''
 posicao = (0, 20)  # Posição (x, y) do texto na imagem
@@ -125,24 +126,25 @@ if __name__ == "__main__":
             image_name = os.path.basename(files)
             imagemcount += 1
             img = cv2.imread(files)
-            # img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+            imgy = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
             # height, width, dim = img.shape
             # Divide a imagem em 100 submatrizes
             listClassSubmatrix = subM.dividerImage(img, submatriz_height, submatriz_width, submatriz_length)
+            listClassSubmatrixY = subM.dividerImage(imgy, submatriz_height, submatriz_width, submatriz_length)
             # Cria um dataframe identificando cada submatriz com fogo (Target=1) ou sem fogo (Target=o)
             # cada linha representa uma submatrix e contém 25x25x3 colunas, sendo os PIXEL. Ainda é adicionado uma coluna de 'TARGET' para identifcar fogo ou não
             for n in range(0, csvimages.shape[0], 100):
                 if image_name == csvimages.at[n, 'imagem']:
                     for k in range(100):
-                        img2 = listClassSubmatrix[k].matrix.copy()  # recebe a matriz do index i
+                        # imgy = subM.mount_Dataframe(listClassSubmatrixY[k])
+                        img_df = subM.mount_Dataframe(listClassSubmatrix[k])
+                        # img_df = pd.concat([imgy, img_df], ignore_index=True, axis=1)
+                        # img_df = subM.mount_Dataframe(listClassSubmatrixY[k])
                         if csvimages.at[n + k, 'isfire'] == 1:
-                            img_df = subM.mount_Dataframe(listClassSubmatrix[k])
                             img_df['Target'] = 1
-                            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
                         else:
-                            img_df = subM.mount_Dataframe(listClassSubmatrix[k])
                             img_df['Target'] = 0
-                            train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
+                        train_df = pd.concat([train_df, img_df], ignore_index=True, axis=0)
                     break
 
     mountdatasettrain = time.time()
@@ -183,7 +185,8 @@ if __name__ == "__main__":
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, False, save=False)
     timepredictimagealone = time.time()
     print("Predic 1 image time: {:.2f} milissegundos".format((timepredictimagealone - timetrainingKNN) * 1000))
-    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
+    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
+    Ev.ImageTest(knn_class, 'dataset/Training and Validation/fire/fire_0004.jpg', submatriz_height, submatriz_width, True)
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc132.jpg', submatriz_height, submatriz_width, plot=True, save=True)
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc116.jpg', submatriz_height, submatriz_width, plot=True, save=False)
 

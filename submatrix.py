@@ -67,7 +67,7 @@ def mount_Dataframe(submatrixClass):
     df[df.columns[-1] + 1] = submatrixClass.meanall
     # df[df.columns[-1] + 1] = (submatrixClass.meanRed + submatrixClass.meanGreen + submatrixClass.meanBlue) / 3
     df[df.columns[-1] + 1] = submatrixClass.medianall
-    df[df.columns[-1] + 1] = np.median(submatrixClass.Bmatrix)
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Bmatrix)
     df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
     df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
     df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))

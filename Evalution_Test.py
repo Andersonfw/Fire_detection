@@ -134,22 +134,23 @@ def manualTest(knn, dir, submatriz_height, submatriz_width, csvimages):
         imagemcount += 1
         image_name = os.path.basename(files)
         img_test = cv2.imread(files)
-        # img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2YCrCb)
+        imgy = cv2.cvtColor(img_test, cv2.COLOR_BGR2YCrCb)
         # Divide a imagem em 100 submatrizes
         listClassSubmatrix = subM.dividerImage(img_test, submatriz_height, submatriz_width, submatriz_length)
+        listClassSubmatrixY = subM.dividerImage(imgy, submatriz_height, submatriz_width, submatriz_length)
 
         for n in range(0, csvimages.shape[0], 100):
             if image_name == csvimages.at[n, 'imagem']:
                 for k in range(100):
-                    img2 = listClassSubmatrix[k].matrix.copy()  # recebe a matriz do index i
+                    # imgy = subM.mount_Dataframe(listClassSubmatrixY[k])
+                    img_df = subM.mount_Dataframe(listClassSubmatrix[k])
+                    # img_df = pd.concat([imgy, img_df], ignore_index=True, axis=1)
+                    # img_df = subM.mount_Dataframe(listClassSubmatrixY[k])
                     if csvimages.at[n + k, 'isfire'] == 1:
-                        img_df = subM.mount_Dataframe(listClassSubmatrix[k])
                         img_df['Target'] = 1
-                        test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
                     else:
-                        img_df = subM.mount_Dataframe(listClassSubmatrix[k])
                         img_df['Target'] = 0
-                        test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
+                    test_df = pd.concat([test_df, img_df], ignore_index=True, axis=0)
                 break
         # Cria um dataframe identificando cada submatriz com fogo (Target=1) ou sem fogo (Target=o)
         # cada linha representa uma submatrix e contém 25x25x3 colunas, sendo os PIXEL. Ainda é adicionado uma coluna de 'TARGET' para identifcar fogo ou não
