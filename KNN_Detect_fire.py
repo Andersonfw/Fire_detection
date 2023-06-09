@@ -4,6 +4,7 @@ Created on maio 30 21:04:36 2023
 @author: Ânderson Felipe Weschenfelder
 """
 
+
 import csv
 import locale
 import datetime
