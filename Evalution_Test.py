@@ -89,10 +89,10 @@ def ImageTest(knn, imagename, submatriz_height, submatriz_width, plot=None, save
             previmg = array_raw
         param_image[iniciox:iniciox + submatriz_height, inicioy:inicioy + submatriz_width] = previmg
         inicioy += submatriz_width
-        if inicioy == height:
+        if inicioy == width:
             inicioy = 0
             iniciox += submatriz_height
-        if iniciox == width:
+        if iniciox == height:
             iniciox = 0
     # param_image = cv2.cvtColor(param_image, cv2.COLOR_YCrCb2BGR)
     if plot:

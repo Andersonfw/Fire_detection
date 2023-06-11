@@ -35,13 +35,14 @@ def plotboxplot(data):
                 a += 3
                 setBoxColors(bp)
 
-        plt.xticks([1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5, 25.5, 28.5, 31.5, 34.5, 37.5, 40.5],
-                   ['σ Red', 'σ Green','σ Blue', 'σ Global', r'$\mu$ Red', r'$\mu$ Green', r'$\mu$ Global',
-                    'Median Global', 'Median Green', 'Median Red', 'Mode Red', r'$H$ Red', 'Min. Red', 'entropy Red'], rotation='vertical')
-        # plt.xticks([1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5, 25.5, 28.5, 31.5, 34.5, 37.5, 40.5, 43.5, 46.5],
-        #            ['σ Red', 'σ Green', 'σ Blue', 'σ Global', r'$\mu$ Red', r'$\mu$ Blue', r'$\mu$ Green', r'$\mu$ Global',
-        #             'Median Global', 'Median Blue', 'Median Green', 'Median Red', 'Mode Red', r'$H$ Red', 'Min. Red', 'entropy Red'],
-        #            rotation='vertical')
+        # plt.xticks([1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5, 25.5, 28.5, 31.5, 34.5, 37.5, 40.5],
+        #            ['σ Red', 'σ Green','σ Blue', 'σ Global', r'$\mu$ Red', r'$\mu$ Green', r'$\mu$ Global',
+        #             'Median Global', 'Median Green', 'Median Red', 'Mode Red', r'$H$ Red', 'Min. Red', 'entropy Red'], rotation='vertical')
+        plt.xticks([1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5, 25.5, 28.5, 31.5, 34.5, 37.5, 40.5, 43.5, 46.5, 49.5, 52.5, 55.5, 58.5, 61.5, 64.5],
+                   ['σ Red', 'σ Green', 'σ Blue', 'σ Global', r'$\mu$ Red', r'$\mu$ Blue', r'$\mu$ Green', r'$\mu$ Global',
+                    'Median Global', 'Median Blue', 'Median Green', 'Median Red', 'Mode Red', 'Mode Green', 'Mode blue', r'$H$ Green',
+                    r'$H$ Red', r'$H$ Blue', 'Min. Red', 'entropy Red', 'entropy Green', 'entropy Blue'],
+                   rotation='vertical')
         hB, = plt.plot([1, 1], 'b-')
         hR, = plt.plot([1, 1], 'r-')
         plt.legend((hB, hR), ('No-Fire', 'Fire'), loc='upper left')

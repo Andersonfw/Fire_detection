@@ -44,76 +44,90 @@ def mount_Dataframe(submatrixClass):
     # df = pd.concat([df, dfb], axis=1)
     # df = pd.concat([df, dfg], axis=1)
     # df = pd.concat([df, dfr], axis=1)
-    df[0] = [submatrixClass.desvRed]
-    # df[0] = [submatrixClass.desvall]
-    # df[0] = [np.std(padronizar(submatrixClass.Rmatrix.copy())[0], axis=None)], minimu
-    # df[df.columns[-1] + 1] = submatrixClass.desvRed
 
-    #
-    df[df.columns[-1] + 1] = submatrixClass.desvGreen
-    df[df.columns[-1] + 1] = submatrixClass.desvBlue
+    #########################   ALL FEATURES  #######################
+
+    # df[0] = [submatrixClass.desvRed]
+    # df[df.columns[-1] + 1] = submatrixClass.desvGreen
+    # df[df.columns[-1] + 1] = submatrixClass.desvBlue
     # df[df.columns[-1] + 1] = submatrixClass.desvall
-    df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
-    df[df.columns[-1] + 1] = submatrixClass.meanRed
-    # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Bmatrix.copy())[0],  axis=None)
-    # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Gmatrix.copy())[0],  axis=None)
-    # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.matrix.copy())[0],  axis=None)
-    # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.Rmatrix.copy())[0])
+    # # df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
+    # df[df.columns[-1] + 1] = submatrixClass.meanRed
     # df[df.columns[-1] + 1] = submatrixClass.meanBlue
-    # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.Gmatrix.copy())[0])
-    # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.matrix.copy())[0])
-    # df[df.columns[-1] + 1] = np.median(padronizar(submatrixClass.matrix.copy())[0])
-    df[df.columns[-1] + 1] = submatrixClass.meanGreen
-    df[df.columns[-1] + 1] = submatrixClass.meanall
+    # df[df.columns[-1] + 1] = submatrixClass.meanGreen
     # df[df.columns[-1] + 1] = (submatrixClass.meanRed + submatrixClass.meanGreen + submatrixClass.meanBlue) / 3
-    df[df.columns[-1] + 1] = submatrixClass.medianall
+    # df[df.columns[-1] + 1] = submatrixClass.medianall
     # df[df.columns[-1] + 1] = np.median(submatrixClass.Bmatrix)
-    df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
-    df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
-    df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
     # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Gmatrix.flatten()))
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Bmatrix.flatten()))
     # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Gmatrix, axis=None)
-    df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Rmatrix, axis=None)
-    # df[df.columns[-1] + 1] = np.max(submatrixClass.Rmatrix) - np.min(submatrixClass.Rmatrix)
-    df[df.columns[-1] + 1] = np.min(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Rmatrix, axis=None)
     # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Bmatrix, axis=None)
-    # df[df.columns[-1] + 1] = np.median(padronizar(submatrixClass.Rmatrix.copy())[0])
+    # df[df.columns[-1] + 1] = np.min(submatrixClass.Rmatrix)
     # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Rmatrix)
     # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Gmatrix)
     # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Bmatrix)
-    # df[df.columns[-1] + 1] = np.var(submatrixClass.Rmatrix)
-    # df[df.columns[-1] + 1] = np.mean(np.cov(submatrixClass.Rmatrix, submatrixClass.Gmatrix))
-    # df[df.columns[-1] + 1] = np.mean(np.cov(submatrixClass.Rmatrix, submatrixClass.Bmatrix))
-    # meanBlue = submatrixClass.meanBlue
-    # desvBlue = submatrixClass.desvBlue
-    # meanGreen = submatrixClass.meanGreen
-    # desvGreen = submatrixClass.desvGreen
-    # meanRed = submatrixClass.meanRed
-    # desvRed = submatrixClass.desvRed
-    #
-    # ratio_mean_RG = 0
-    # ratio_mean_RB = 0
-    # ratio_desv_RG = 0
-    # ratio_desv_RB = 0
-    # ratio_desv_global = 0
-    #
-    # if meanGreen > 0:
-    #     ratio_mean_RG = meanRed / meanGreen
-    # if meanBlue > 0:
-    #     ratio_mean_RB = meanRed / meanBlue
-    # if desvGreen > 0:
-    #     ratio_desv_RG = desvRed / desvGreen
-    # if desvBlue > 0:
-    #     ratio_desv_RB = desvRed / desvBlue
-    # if desvRed > 0:
-    #     ratio_desv_global = submatrixClass.desvall / desvRed
-    #
-    # df[df.columns[-1] + 1] = ratio_mean_RG
-    # df[df.columns[-1] + 1] = ratio_mean_RB
-    # df[df.columns[-1] + 1] = ratio_desv_RG
-    # df[df.columns[-1] + 1] = ratio_desv_RB
-    # df[df.columns[-1] + 1] = ratio_desv_global
+    #################################################################
 
+    ########################  TESTES  ##########################
+    # # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Bmatrix.copy())[0],  axis=None)
+    # # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.Gmatrix.copy())[0],  axis=None)
+    # # df[df.columns[-1] + 1] = np.std(padronizar(submatrixClass.matrix.copy())[0],  axis=None)
+    # # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.Rmatrix.copy())[0])
+    # # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.Gmatrix.copy())[0])
+    # # df[df.columns[-1] + 1] = np.mean(padronizar(submatrixClass.matrix.copy())[0])
+    # # df[df.columns[-1] + 1] = np.median(padronizar(submatrixClass.matrix.copy())[0])
+
+    img = cv2.cvtColor(submatrixClass.matrix, cv2.COLOR_BGR2YCrCb)
+    Y, Cb, Cr = cv2.split(img)
+    mean_y = np.mean(Y)
+    mean_cb = np.mean(Cb)
+    mean_cr = np.mean(Cr)
+    # df[df.columns[-1] + 1] = mean_y
+    # df[df.columns[-1] + 1] = mean_cb
+    # # df[df.columns[-1] + 1] = mean_cr
+
+    #################################################################
+    df[0] = [submatrixClass.desvall]
+    # df[df.columns[-1] + 1] = submatrixClass.desvGreen
+    # df[df.columns[-1] + 1] = submatrixClass.desvBlue
+    # df[df.columns[-1] + 1] = submatrixClass.desvall
+    # df[df.columns[-1] + 1] = (submatrixClass.desvBlue + submatrixClass.desvGreen + submatrixClass.desvall) / 3
+    # df[df.columns[-1] + 1] = np.std(np.concatenate((submatrixClass.Rmatrix.flatten(), submatrixClass.Gmatrix.flatten(),submatrixClass.Bmatrix.flatten())),  axis=None)
+    df[df.columns[-1] + 1] = submatrixClass.meanRed
+    # df[df.columns[-1] + 1] = submatrixClass.meanBlue
+    # df[df.columns[-1] + 1] = submatrixClass.meanGreen
+    # df[df.columns[-1] + 1] = submatrixClass.meanall
+    # df[df.columns[-1] + 1] = (submatrixClass.meanRed + submatrixClass.meanGreen + submatrixClass.meanBlue) / 3
+    # df[df.columns[-1] + 1] = submatrixClass.medianall
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Bmatrix)
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Gmatrix)
+    df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
+    df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Gmatrix.flatten()))
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Bmatrix.flatten()))
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Gmatrix, axis=None)
+    df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Rmatrix, axis=None)
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Bmatrix, axis=None)
+    # df[df.columns[-1] + 1] = np.min(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Gmatrix)
+    # df[df.columns[-1] + 1] = entropyCalcGrayScale(submatrixClass.Bmatrix)
+    # df[0] = [submatrixClass.desvall]
+    # df[df.columns[-1] + 1] = mean_cb
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Rmatrix, axis=None)
+
+    ####################### BEST OPTION  #####################
+    # df[0] = [submatrixClass.desvall]
+    # df[df.columns[-1] + 1] = submatrixClass.meanRed
+    # df[df.columns[-1] + 1] = np.median(submatrixClass.Rmatrix)
+    # df[df.columns[-1] + 1] = np.argmax(np.bincount(submatrixClass.Rmatrix.flatten()))
+    # df[df.columns[-1] + 1] = stats.hmean(submatrixClass.Rmatrix, axis=None)
     return df
 
 def padronizar(entrada):
@@ -138,7 +152,7 @@ def dividerImage (img, submatriz_height, submatriz_width, submatriz_length, data
     green = 1  # index da matriz green da imagem
     red = 2  # index da matriz red da imagem
     listClassSubmatrix = []  # array de classes da submatrizes
-    height, width, dim = img.shape
+    width, height, dim = img.shape
     mBlue, mGreen, mRed = cv2.split(img)  # divide a imagem nas matrizes BGR
     submatriz_num = int((height / submatriz_height) * (width / submatriz_width))
     df = pd.DataFrame()

@@ -17,6 +17,14 @@ import numpy as np
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier  # Para classificação
+from sklearn.ensemble import RandomForestRegressor  # Para regressão
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score  # Para classificação
+from sklearn.metrics import mean_squared_error  # Para regressão
+from sklearn.naive_bayes import GaussianNB  # Para o Naive Bayes Gaussiano
+from sklearn.naive_bayes import MultinomialNB  # Para o Naive Bayes Multinomial
+
 from sklearn.metrics import confusion_matrix
 import submatrix as subM
 import Evalution_Test as Ev
@@ -40,7 +48,6 @@ def saveresults(accuracy, TPR, FPR, Precision, F1, PLR, testeTesting, dfresult):
     dfresult['PLR'] = locale.format_string('%.3f', (PLR))
 
     testeTesting = pd.concat([testeTesting, dfresult], ignore_index=True, axis=0)
-
     testeTesting.to_csv(csvtestResult, index=False, sep=';')
 
 
@@ -152,7 +159,7 @@ if __name__ == "__main__":
     print("Mount dataset Training time: {:.2f} milissegundos".format((mountdatasettrain - timestart)*1000))
     plt.figure()
     bpl.plotboxplot(train_df.copy())
-    plt.show()
+    # plt.show()
 
     # SPLITING X and y DATASETS
     y = train_df['Target']
@@ -170,9 +177,14 @@ if __name__ == "__main__":
 
     # TRAINING KNN
     timetrainingKNN = time.time()
+    # knn_class = GaussianNB()  # Para o Naive Bayes Gaussiano
+    # knn_class = MultinomialNB()  # Para o Naive Bayes Multinomial
+    # knn_class = RandomForestClassifier()  # Para classificação
+    # knn_class = RandomForestRegressor()  # Para regressão
     knn_class = KNeighborsClassifier(n_neighbors=50)
     # knn_class = KNeighborsClassifier(n_neighbors=50, weights='distance', p=1, algorithm='ball_tree')
     # knn_class = svm.SVC(kernel='rbf')
+    # knn_class = svm.SVC(kernel='poly', degree=6, C = 0.3)
     knn_class.fit(X, y)
     print("Training KNN time: {:.2f} milissegundos".format((timetrainingKNN - mountdatasettrain)*1000))
 
@@ -185,10 +197,12 @@ if __name__ == "__main__":
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc162.jpg', submatriz_height, submatriz_width, False, save=False)
     timepredictimagealone = time.time()
     print("Predic 1 image time: {:.2f} milissegundos".format((timepredictimagealone - timetrainingKNN) * 1000))
+
+    # Ev.ImageTest(knn_class, 'C:/Users/ander/Downloads/teste.png', submatriz_height, submatriz_width, True)
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
-    Ev.ImageTest(knn_class, 'dataset/Training and Validation/fire/fire_0004.jpg', submatriz_height, submatriz_width, True)
+    # Ev.ImageTest(knn_class, 'dataset/Training and Validation/fire/fire_0004.jpg', submatriz_height, submatriz_width, True)
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc132.jpg', submatriz_height, submatriz_width, plot=True, save=True)
-    # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc116.jpg', submatriz_height, submatriz_width, plot=True, save=False)
+    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc116.jpg', submatriz_height, submatriz_width, plot=True, save=False)
 
     # tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
 

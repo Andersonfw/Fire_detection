@@ -201,7 +201,7 @@ if __name__ == "__main__":
             if iniciox == width :
                 iniciox = 0
 
-        caminho_destino = os.path.join(saveImageDir, ("Fireimagem{}_".format(imagemcount) + image_name))
+        caminho_destino = os.path.join(saveImageDir, image_name)
         cv2.imwrite(caminho_destino, new_image)
 
 
