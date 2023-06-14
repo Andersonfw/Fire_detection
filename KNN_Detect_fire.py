@@ -170,6 +170,9 @@ if __name__ == "__main__":
 
     print(y.shape)
 
+    # plt.figure()
+    # bpl.plotboxplot(train_df)
+    # plt.show()
 
     X = train_df
     X.pop('Target')
@@ -198,11 +201,12 @@ if __name__ == "__main__":
     timepredictimagealone = time.time()
     print("Predic 1 image time: {:.2f} milissegundos".format((timepredictimagealone - timetrainingKNN) * 1000))
 
+
     # Ev.ImageTest(knn_class, 'C:/Users/ander/Downloads/teste.png', submatriz_height, submatriz_width, True)
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc080.jpg', submatriz_height, submatriz_width, True)
     # Ev.ImageTest(knn_class, 'dataset/Training and Validation/fire/fire_0004.jpg', submatriz_height, submatriz_width, True)
     # Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc132.jpg', submatriz_height, submatriz_width, plot=True, save=True)
-    Ev.ImageTest(knn_class, 'dataset/Testing/fire/abc116.jpg', submatriz_height, submatriz_width, plot=True, save=False)
+    Ev.ImageTest(knn_class, 'dataset/abc192.jpg', submatriz_height, submatriz_width, plot=True, save=True)
 
     # tn, fp, fn, tp = Ev.DirImageTest(knn_class, dir, submatriz_height, submatriz_width)
 

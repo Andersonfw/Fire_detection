@@ -126,6 +126,7 @@ knn_class = GaussianNB()  # Para o Naive Bayes Gaussiano
 # knn_class = svm.SVC(kernel='poly', degree=6, C = 0.3)
 knn_class.fit(X,y)
 
+timestartTest = time.time()
 
 # %%
 # CREATING TEST DATASET FOR FIRE SAMPLES
@@ -188,6 +189,9 @@ test_df.loc[test_df['Predict'] == test_df['Target'], 'Error'] = 0
 test_df.loc[test_df['Predict'] != test_df['Target'], 'Error'] = 1
 # test_df
 
+timeend = time.time()
+print("Predic 380 image time: {:.2f} milissegundos".format((timeend - timestartTest) * 1000))
+print("Predic 1 image time: {:.2f} milissegundos".format(((timeend - timestartTest) * 1000)/380))
 # %%
 # CONFUSION MATRIX
 tn, fp, fn, tp = confusion_matrix(test_df['Target'], test_df['Predict']).ravel()
