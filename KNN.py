@@ -116,11 +116,11 @@ print(X.shape)
 
 # %%
 # TRAINING KNN
-knn_class = GaussianNB()  # Para o Naive Bayes Gaussiano
+# knn_class = GaussianNB()  # Para o Naive Bayes Gaussiano
 # knn_class = MultinomialNB()  # Para o Naive Bayes Multinomial
 # knn_class = RandomForestClassifier()  # Para classificação
 # knn_class = RandomForestRegressor()  # Para regressão
-# knn_class = KNeighborsClassifier(n_neighbors=80)
+knn_class = KNeighborsClassifier(n_neighbors=50)
 # knn_class = KNeighborsClassifier(n_neighbors=50, weights='distance', p=1, algorithm='ball_tree')
 # knn_class = svm.SVC(kernel='rbf')
 # knn_class = svm.SVC(kernel='poly', degree=6, C = 0.3)
